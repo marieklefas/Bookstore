@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.example.Bookstore.DataBases.User;
 import com.example.Bookstore.Repositories.UserRepository;
 
+import java.util.Collections;
+
 @Service
 public class UserService {
     private UserRepository userRepository;
@@ -21,6 +23,7 @@ public class UserService {
             return false;
         }
 
+        user.setRole(Collections.singleton("ROLE_USER"));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
