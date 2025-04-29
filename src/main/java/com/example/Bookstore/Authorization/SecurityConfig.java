@@ -17,7 +17,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/home", "/login", "/register").permitAll()
                         .requestMatchers("/currency_converter", "/ohm_law_calculator", "/account").authenticated()
-                        .requestMatchers("/currency/**", "/users_management/**", "/users_history").hasRole("ADMIN")
+                        .requestMatchers("/users_management/**", "/addauthor", "/addgenre", "/addlanguage", "/addtag", "/addpublisher", "/addbook", "/viewbooks").hasRole("ADMIN")
                         .requestMatchers("/my_history").hasRole("USER")
                         .anyRequest().authenticated()
                 )
