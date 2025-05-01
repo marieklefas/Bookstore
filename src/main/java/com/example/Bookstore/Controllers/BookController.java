@@ -4,20 +4,28 @@ import com.example.Bookstore.DataBases.*;
 import com.example.Bookstore.Repositories.*;
 import com.example.Bookstore.Services.*;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class BookController {
+    @Autowired private BookRepository bookRepository;
     @Autowired private AuthorRepository authorRepository;
     @Autowired private GenreRepository genreRepository;
     @Autowired private BookService bookService;
@@ -87,37 +95,69 @@ public class BookController {
 
     @GetMapping("/addbook")
     public String showAddBookForm(Model model) {
+        model.addAttribute("book", new Book());
+
         model.addAttribute("authors", authorRepository.findAll());
         model.addAttribute("genres", genreRepository.findAll());
         model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("languages", languageRepository.findAll());
         model.addAttribute("publishers", publisherRepository.findAll());
+        model.addAttribute("coverTypes", List.of("Мягкая", "Твердая"));
+        model.addAttribute("ageLimits", List.of("0+", "6+", "12+", "16+", "18+"));
         return "BookManaging/addBook";
     }
 
     @PostMapping("/addbook")
-    public String addBook(@RequestParam String title,
-                          @RequestParam String description,
-                          @RequestParam("coverImg") MultipartFile coverImg,
-                          @RequestParam int pageNumber,
-                          @RequestParam String ageLimit,
-                          @RequestParam int publishingYear,
-                          @RequestParam int availableAmount,
-                          @RequestParam String coverType,
-                          @RequestParam String language,
-                          @RequestParam String publisher,
-                          @RequestParam List<String> authors,
-                          @RequestParam List<String> genres,
-                          @RequestParam List<String> tags) throws IOException {
-        byte[] imageBytes = coverImg.isEmpty() ? null : coverImg.getBytes();
-        bookService.createBook(title, description, imageBytes, pageNumber, ageLimit, publishingYear, availableAmount,
-                language, publisher, CoverType.valueOf(coverType), new HashSet<>(authors), new HashSet<>(genres), new HashSet<>(tags));
+    public String addBook(@ModelAttribute Book book,
+                          @RequestParam("coverFile") MultipartFile coverFile,
+                          @RequestParam("authorIds") List<Long> authorIds,
+                          @RequestParam("genreIds") List<Long> genreIds,
+                          @RequestParam("tagIds") List<Long> tagIds,
+                          @RequestParam("languageId") Long languageId,
+                          @RequestParam("publisherId") Long publisherId) throws IOException {
+
+        // Обложка
+        if (!coverFile.isEmpty()) {
+            String filename = UUID.randomUUID() + "_" + coverFile.getOriginalFilename();
+            Path uploadPath = Paths.get("src/main/resources/static/images/");
+            Files.createDirectories(uploadPath);
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            book.setCoverImg("/images/" + filename);
+        }
+
+        // Автор(ы)
+        List<Author> authors = authorRepository.findAllById(authorIds);
+        book.setAuthors(authors);
+
+        // Жанры
+        List<Genre> genres = genreRepository.findAllById(genreIds);
+        book.setGenres(genres);
+
+        // Теги
+        List<Tag> tags = tagRepository.findAllById(tagIds);
+        book.setTags(tags);
+
+        // Язык
+        languageRepository.findById(languageId).ifPresent(book::setLanguage);
+
+        // Издательство
+        publisherRepository.findById(publisherId).ifPresent(book::setPublisher);
+
+        System.out.println("Title: " + book.getTitle());
+        System.out.println("Authors: " + authorIds);
+        System.out.println("Genres: " + genreIds);
+        System.out.println("Tags: " + tagIds);
+        System.out.println("Cover: " + (coverFile != null ? coverFile.getOriginalFilename() : "null"));
+
+        bookRepository.save(book);
         return "redirect:/addbook";
     }
 
     @GetMapping("/viewbooks")
     public String getAllBooks(Model model) {
-        model.addAttribute("books", bookService.getAllBooks());
+        List<Book> books = bookRepository.findAll();
+        model.addAttribute("books", books);
         return "BookManaging/viewBooks";
     }
 }

@@ -11,45 +11,27 @@
 <body>
     <div th:insert="~{toolbar :: toolbar}"></div>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">Список книг</h2>
-
-        <div th:if="${#lists.isEmpty(books)}">
-            <p>Нет доступных книг.</p>
-        </div>
-
-        <div th:each="book : ${books}" class="card mb-4">
-            <div class="row g-0">
-                <div class="col-md-3 d-flex align-items-center justify-content-center">
-                    <img th:src="'data:image/jpeg;base64,' + ${book.coverImgBase64}" class="img-fluid rounded-start" alt="Обложка книги" style="max-height: 200px;">
-                </div>
-                <div class="col-md-9">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${book.title}">Название книги</h5>
-                        <p class="card-text" th:text="${book.description}">Описание книги</p>
-
-                        <p class="mb-1"><strong>Авторы:</strong>
-                            <span th:each="author : ${book.authors}" th:text="${author.name}" th:append=", "></span>
-                        </p>
-                        <p class="mb-1"><strong>Жанры:</strong>
-                            <span th:each="genre : ${book.genres}" th:text="${genre.name}" th:append=", "></span>
-                        </p>
-                        <p class="mb-1"><strong>Теги:</strong>
-                            <span th:each="tag : ${book.tags}" th:text="${tag.name}" th:append=", "></span>
-                        </p>
-                        <p class="mb-1"><strong>Язык:</strong> <span th:text="${book.language.name}">Русский</span></p>
-                        <p class="mb-1"><strong>Издательство:</strong> <span th:text="${book.publisher.name}">Издательство</span></p>
-                        <p class="mb-1"><strong>Год издания:</strong> <span th:text="${book.publishingYear}">2023</span></p>
-                        <p class="mb-1"><strong>Количество страниц:</strong> <span th:text="${book.pageNumber}">300</span></p>
-                        <p class="mb-1"><strong>Тип обложки:</strong> <span th:text="${book.coverType == T(your.package.CoverType).HARDCOVER ? 'Твёрдый переплёт' : 'Мягкий переплёт'}">Тип</span></p>
-                        <p class="mb-1"><strong>Возрастное ограничение:</strong> <span th:text="${book.ageLimit}">18+</span></p>
-                        <p class="mb-1"><strong>В наличии:</strong> <span th:text="${book.availableAmount}">5</span></p>
-                    </div>
+    <h1>Список книг</h1>
+    <div class="row row-cols-1 g-4">
+        <div class="col" th:each="book : ${books}">
+            <div class="d-flex border rounded p-3">
+                <img th:src="@{${book.coverImg}}" class="img-thumbnail me-3" style="width: 150px; height: auto;" />
+                <div>
+                    <h5 th:text="${book.title}"></h5>
+                    <p><b>Авторы:</b> <span th:each="a : ${book.authors}" th:text="${a.name + ', '}" /></p>
+                    <p><b>Жанры:</b> <span th:each="g : ${book.genres}" th:text="${g.name + ', '}" /></p>
+                    <p><b>Язык:</b> <span th:text="${book.language.name}" /></p>
+                    <p><b>Страниц:</b> <span th:text="${book.pageNumber}" /></p>
+                    <p><b>Обложка:</b> <span th:text="${book.coverType}" /></p>
+                    <p><b>Возрастное ограничение:</b> <span th:text="${book.ageLimit}" /></p>
+                    <p><b>Теги:</b> <span th:each="t : ${book.tags}" th:text="${t.name + ', '}" /></p>
+                    <p><b>Год:</b> <span th:text="${book.publishingYear}" /></p>
+                    <p><b>Издательство:</b> <span th:text="${book.publisher.name}" /></p>
+                    <p><b>В наличии:</b> <span th:text="${book.availableAmount}" /></p>
+                    <p><b>Цена:</b> <span th:text="${book.price}" /> руб.</p>
                 </div>
             </div>
         </div>
     </div>
-
-
 </body>
 </html>
