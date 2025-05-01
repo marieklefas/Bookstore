@@ -7,10 +7,7 @@ import com.example.Bookstore.Services.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
+@RequestMapping("/managingbooks")
 public class BookController {
     @Autowired private BookRepository bookRepository;
     @Autowired private AuthorRepository authorRepository;
@@ -42,7 +40,7 @@ public class BookController {
     @PostMapping("/addauthor")
     public String addAuthor(@RequestParam String name) {
         authorRepository.save(new Author(name));
-        return "redirect:/addauthor";
+        return "redirect:/managingbooks/addauthor";
     }
 
     @GetMapping("/addgenre")
@@ -53,7 +51,7 @@ public class BookController {
     @PostMapping("/addgenre")
     public String addGenre(@RequestParam String name) {
         genreRepository.save(new Genre(name));
-        return "redirect:/addgenre";
+        return "redirect:/managingbooks/addgenre";
     }
 
     @GetMapping("/addlanguage")
@@ -65,7 +63,7 @@ public class BookController {
     public String addLanguage(@RequestParam String name) {
         languageRepository.findByName(name)
                 .orElseGet(() -> languageRepository.save(new Language(name)));
-        return "redirect:/addlanguage";
+        return "redirect:/managingbooks/addlanguage";
     }
 
     @GetMapping("/addtag")
@@ -77,7 +75,7 @@ public class BookController {
     public String addTag(@RequestParam String name) {
         tagRepository.findByName(name)
                 .orElseGet(() -> tagRepository.save(new Tag(name)));
-        return "redirect:/addtag";
+        return "redirect:/managingbooks/addtag";
     }
 
     @GetMapping("/addpublisher")
@@ -89,7 +87,7 @@ public class BookController {
     public String addPublisher(@RequestParam String name) {
         publisherRepository.findByName(name)
                 .orElseGet(() -> publisherRepository.save(new Publisher(name)));
-        return "redirect:/addpublisher";
+        return "redirect:/managingbooks/addpublisher";
     }
 
 
@@ -118,8 +116,9 @@ public class BookController {
 
         // Обложка
         if (!coverFile.isEmpty()) {
-            String filename = UUID.randomUUID() + "_" + coverFile.getOriginalFilename();
-            Path uploadPath = Paths.get("src/main/resources/static/images/");
+            String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
+            String filename = UUID.randomUUID() + "_" + originalFilename;
+            Path uploadPath = Paths.get("uploads/images/");
             Files.createDirectories(uploadPath);
             Path filePath = uploadPath.resolve(filename);
             Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -151,7 +150,7 @@ public class BookController {
         System.out.println("Cover: " + (coverFile != null ? coverFile.getOriginalFilename() : "null"));
 
         bookRepository.save(book);
-        return "redirect:/addbook";
+        return "redirect:/managingbooks/addbook";
     }
 
     @GetMapping("/viewbooks")
