@@ -4,7 +4,6 @@ import com.example.Bookstore.DataBases.*;
 import com.example.Bookstore.Repositories.*;
 import com.example.Bookstore.Services.*;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -100,8 +98,8 @@ public class BookController {
         model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("languages", languageRepository.findAll());
         model.addAttribute("publishers", publisherRepository.findAll());
-        model.addAttribute("coverTypes", List.of("Мягкая", "Твердая"));
-        model.addAttribute("ageLimits", List.of("0+", "6+", "12+", "16+", "18+"));
+        model.addAttribute("coverTypes");
+        model.addAttribute("ageLimits");
         return "BookManaging/addBook";
     }
 
@@ -114,7 +112,6 @@ public class BookController {
                           @RequestParam("languageId") Long languageId,
                           @RequestParam("publisherId") Long publisherId) throws IOException {
 
-        // Обложка
         if (!coverFile.isEmpty()) {
             String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
             String filename = UUID.randomUUID() + "_" + originalFilename;
@@ -125,38 +122,26 @@ public class BookController {
             book.setCoverImg("/images/" + filename);
         }
 
-        // Автор(ы)
         List<Author> authors = authorRepository.findAllById(authorIds);
         book.setAuthors(authors);
 
-        // Жанры
         List<Genre> genres = genreRepository.findAllById(genreIds);
         book.setGenres(genres);
 
-        // Теги
         List<Tag> tags = tagRepository.findAllById(tagIds);
         book.setTags(tags);
 
-        // Язык
         languageRepository.findById(languageId).ifPresent(book::setLanguage);
-
-        // Издательство
         publisherRepository.findById(publisherId).ifPresent(book::setPublisher);
-
-        System.out.println("Title: " + book.getTitle());
-        System.out.println("Authors: " + authorIds);
-        System.out.println("Genres: " + genreIds);
-        System.out.println("Tags: " + tagIds);
-        System.out.println("Cover: " + (coverFile != null ? coverFile.getOriginalFilename() : "null"));
 
         bookRepository.save(book);
         return "redirect:/managingbooks/addbook";
     }
 
-    @GetMapping("/viewbooks")
+    @GetMapping("/editbooks")
     public String getAllBooks(Model model) {
         List<Book> books = bookRepository.findAll();
         model.addAttribute("books", books);
-        return "BookManaging/viewBooks";
+        return "BookManaging/editBooks";
     }
 }

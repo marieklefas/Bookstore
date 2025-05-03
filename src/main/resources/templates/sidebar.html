@@ -8,7 +8,7 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/profile/data}" th:classappend="${activePage} == 'data' ? 'active bg-primary text-white' : 'text-dark'" class="nav-link">
+                <a th:href="@{/profile/personalData}" th:classappend="${activePage} == 'personalData' ? 'active bg-primary text-white' : 'text-dark'" class="nav-link">
                     <i class="fas fa-user me-2"></i> Личные данные
                 </a>
             </li>
@@ -18,18 +18,8 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/profile/certificates}" th:classappend="${activePage} == 'certificates' ? 'active bg-primary text-white' : 'text-dark'" class="nav-link">
-                    <i class="fas fa-paw me-2"></i> Сертификаты
-                </a>
-            </li>
-            <li>
-                <a th:href="@{/profile/bonus}" th:classappend="${activePage} == 'bonus' ? 'active bg-primary text-white' : 'text-dark'" class="nav-link">
-                    <i class="fas fa-credit-card me-2"></i> Бонусная карта
-                </a>
-            </li>
-            <li>
                 <a th:href="@{/profile/favorites}" th:classappend="${activePage} == 'favorites' ? 'active bg-primary text-white' : 'text-dark'" class="nav-link">
-                    <i class="fas fa-bookmark me-2"></i> Закладки
+                    <i class="fas fa-heart fa-lg"></i> Избранное
                 </a>
             </li>
             <li>
@@ -37,19 +27,14 @@
                     <i class="fas fa-shopping-cart me-2"></i> Купленные товары
                 </a>
             </li>
-            <li>
-                <a th:href="@{/profile/guard}" th:classappend="${activePage} == 'guard' ? 'active bg-primary text-white' : 'text-dark'" class="nav-link">
-                    <i class="fas fa-owl me-2"></i> Книжный дозор
-                </a>
-            </li>
+
+            <hr>
+
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-link text-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i> Выйти
+                </button>
+            </form>
         </ul>
-
-        <hr>
-
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-link text-danger">
-                <i class="fas fa-sign-out-alt me-2"></i> Выйти
-            </button>
-        </form>
     </div>
 </div>

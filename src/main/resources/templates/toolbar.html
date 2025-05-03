@@ -55,7 +55,7 @@
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
-                    <a th:href="@{/account}" class="text-decoration-none text-dark">
+                    <a th:href="@{/profile}" class="text-decoration-none text-dark">
                         <i class="fa-regular fa-user" style="color: #ff6600;"></i><br>
                         <span class="small" th:text="${firstName}">Профиль</span>
                     </a>

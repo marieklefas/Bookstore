@@ -10,11 +10,12 @@ import java.util.List;
 public class Book {
     public Book() {}
 
-    public Book(String title, String description,
+    public Book(String title, String description, String coverType,
                 Integer pageNumber, String ageLimit, Integer publishingYear,
                 Integer availableAmount) {
         this.title = title;
         this.description = description;
+        this.coverType = coverType;
         this.pageNumber = pageNumber;
         this.ageLimit = ageLimit;
         this.publishingYear = publishingYear;
@@ -58,9 +59,8 @@ public class Book {
     @Column(name = "page_number", nullable = false)
     private Integer pageNumber;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "cover_type")
-    private CoverType coverType;
+    private String coverType;
 
     @Column(name = "age_limit")
     private String ageLimit;
@@ -85,6 +85,15 @@ public class Book {
 
     @Column(name = "price")
     private Double price;
+
+    @ManyToMany(mappedBy = "favorites")
+    private List<User> userFavorites = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "cart")
+    private List<User> userCart = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "purchase")
+    private List<User> userPurchase = new ArrayList<>();
 
 
     public Long getId() { return id; }
@@ -111,8 +120,8 @@ public class Book {
     public Integer getPageNumber() { return pageNumber; }
     public void setPageNumber(Integer pageNumber) { this.pageNumber = pageNumber; }
 
-    public CoverType getCoverType() { return coverType; }
-    public void setCoverType(CoverType coverType) { this.coverType = coverType; }
+    public String getCoverType() { return coverType; }
+    public void setCoverType(String coverType) { this.coverType = coverType; }
 
     public String getAgeLimit() { return ageLimit; }
     public void setAgeLimit(String ageLimit) { this.ageLimit = ageLimit; }
@@ -132,39 +141,12 @@ public class Book {
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
 
-//    public void addAuthor(Author author) {
-//        authors.add(author);
-//        author.getBooks().add(this);
-//    }
-//
-//    public void removeAuthor(Author author) {
-//        authors.remove(author);
-//        author.getBooks().remove(this);
-//    }
-//
-//    public void addGenre(Genre genre) {
-//        genres.add(genre);
-//        genre.getBooks().add(this);
-//    }
-//
-//    public void removeGenre(Genre genre) {
-//        genres.remove(genre);
-//        genre.getBooks().remove(this);
-//    }
-//
-//    public void addTag(Tag tag) {
-//        tags.add(tag);
-//        tag.getBooks().add(this);
-//    }
-//
-//    public void removeTag(Tag tag) {
-//        tags.remove(tag);
-//        tag.getBooks().remove(this);
-//    }
-//
-//    public void decrementAvailableAmount() {
-//        if (availableAmount != null && availableAmount > 0) {
-//            availableAmount--;
-//        }
-//    }
+    public List<User> getUserFavorites() { return userFavorites; }
+    public void setUserFavorites(List<User> userFavorites) { this.userFavorites = userFavorites; }
+
+    public List<User> getUserCart() { return userCart; }
+    public void setUserCart(List<User> userCart) { this.userCart = userCart; }
+
+    public List<User> getUserPurchase() { return userPurchase; }
+    public void setUserPurchase(List<User> userPurchase) { this.userPurchase = userPurchase; }
 }

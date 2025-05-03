@@ -1,6 +1,9 @@
 package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -46,6 +49,32 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> role;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user-favorites",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> favorites = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user-cart",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> cart = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user-purchase",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> purchase = new ArrayList<>();
+
+
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -69,4 +98,13 @@ public class User {
 
     public Set<String> getRole() { return role; }
     public void setRole(Set<String> role) { this.role = role; }
+
+    public List<Book> getFavorites() { return favorites; }
+    public void setFavorites(List<Book> favorites) { this.favorites = favorites; }
+
+    public List<Book> getCart() { return cart; }
+    public void setCart(List<Book> cart) { this.cart = cart; }
+
+    public List<Book> getPurchase() { return purchase; }
+    public void setPurchase(List<Book> purchase) { this.purchase = purchase; }
 }

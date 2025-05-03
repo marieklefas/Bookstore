@@ -28,7 +28,7 @@ public class ToolbarController {
     public String getAllBooks(Model model) {
         List<Book> books = bookRepository.findAll();
         model.addAttribute("books", books);
-        return "BookManaging/viewBooks";
+        return "home";
     }
 
     @GetMapping("/city")
@@ -66,25 +66,9 @@ public class ToolbarController {
         return "search";
     }
 
-    @GetMapping("/account")
+    @GetMapping("/profile")
     public String accountPage() {
-        return "account";
+        return "Profile/profile";
     }
-
-    @GetMapping("/orders")
-    public String ordersPage() {
-        return "orders";
-    }
-
-    @GetMapping("/favorites")
-    public String favoritesPage() {
-        return "favorites";
-    }
-
-    @GetMapping("/cart")
-    public String cartPage() {
-        return "cart";
-    }
-
 
 }

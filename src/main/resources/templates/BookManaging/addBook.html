@@ -7,117 +7,145 @@
   <title>Add genre</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
   <div th:insert="~{toolbar :: toolbar}"></div>
 
-  <h1>Добавить книгу</h1>
-  <form method="post" th:action="@{/managingbooks/addbook}" enctype="multipart/form-data">
+  <div class="container my-4">
+    <h1>Добавить книгу</h1>
+    <form method="post" th:action="@{/managingbooks/addbook}" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="mb-3">
+            <label class="form-label">Название</label>
+            <input type="text" class="form-control" name="title" required>
+          </div>
 
-    <!-- Название -->
-    <div class="mb-3">
-      <label class="form-label">Название</label>
-      <input type="text" class="form-control" name="title" required>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Автор</label>
+            <select name="authorIds" multiple class="form-select select2-multiple" data-placeholder="Выберите автора" required>
+              <option></option>
+              <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.name}"></option>
+            </select>
+          </div>
 
-    <!-- Описание -->
-    <div class="mb-3">
-      <label class="form-label">Описание</label>
-      <textarea class="form-control" name="description" required></textarea>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Жанр</label>
+            <select name="genreIds" multiple class="form-select select2-multiple" data-placeholder="Выберите жанры" required>
+              <option></option>
+              <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
+            </select>
+          </div>
 
-    <!-- Обложка -->
-    <div class="mb-3">
-      <label class="form-label">Обложка</label>
-      <input type="file" class="form-control" name="coverFile" required>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Обложка</label>
+            <input type="file" class="form-control" name="coverFile" required>
+          </div>
 
-    <!-- Авторы -->
-    <div class="mb-3">
-      <label class="form-label">Авторы</label>
-      <select name="authorIds" multiple class="form-select" size="5" required>
-        <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.name}"></option>
-      </select>
-      <a th:href="@{/authors/add}" class="btn btn-link p-0 mt-1">Добавить нового автора</a>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Тип обложки</label>
+            <select name="coverType" class="form-select" required>
+              <option value="" disabled selected hidden>Выберите тип обложки</option>
+              <option value="Твёрдый переплёт">Твёрдый переплёт</option>
+              <option value="Мягкий переплёт">Мягкий переплёт</option>
+            </select>
+          </div>
 
-    <!-- Жанры -->
-    <div class="mb-3">
-      <label class="form-label">Жанры</label>
-      <select name="genreIds" multiple class="form-select" size="5" required>
-        <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
-      </select>
-      <a th:href="@{/genres/add}" class="btn btn-link p-0 mt-1">Добавить жанр</a>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Язык</label>
+            <select name="languageId" class="form-select select2" data-placeholder="Выберите язык" required>
+              <option></option>
+              <option th:each="lang : ${languages}" th:value="${lang.id}" th:text="${lang.name}"></option>
+            </select>
+          </div>
 
-    <!-- Язык -->
-    <div class="mb-3">
-      <label class="form-label">Язык</label>
-      <select name="languageId" class="form-select" required>
-        <option th:each="lang : ${languages}" th:value="${lang.id}" th:text="${lang.name}"></option>
-      </select>
-      <a th:href="@{/languages/add}" class="btn btn-link p-0 mt-1">Добавить язык</a>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Теги</label>
+            <select name="tagIds" multiple class="form-select select2-multiple" data-placeholder="Выберите теги" required>
+              <option></option>
+              <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}"></option>
+            </select>
+          </div>
 
-    <!-- Страниц -->
-    <div class="mb-3">
-      <label class="form-label">Количество страниц</label>
-      <input type="number" class="form-control" name="pageNumber" required>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Издательство</label>
+            <select name="publisherId" class="form-select select2" data-placeholder="Выберите издательство" required>
+              <option></option>
+              <option th:each="pub : ${publishers}" th:value="${pub.id}" th:text="${pub.name}"></option>
+            </select>
+          </div>
 
-    <!-- Обложка тип -->
-    <div class="mb-3">
-      <label class="form-label">Тип обложки</label>
-      <select name="coverType" class="form-select" required>
-        <option value="SOFT">Мягкая</option>
-        <option value="HARD">Твердая</option>
-      </select>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Год издания</label>
+            <input type="number" class="form-control" name="publishingYear" required>
+          </div>
 
-    <!-- Возраст -->
-    <div class="mb-3">
-      <label class="form-label">Возрастное ограничение</label>
-      <input type="text" class="form-control" name="ageLimit" placeholder="например, 18+" required>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Возрастное ограничение</label>
+            <select name="ageLimit" class="form-select" required>
+              <option value="" disabled selected hidden>Выберите возрастное ограничение</option>
+              <option value="Не задано">Не задано</option>
+              <option value="6+">6+</option>
+              <option value="12+">12+</option>
+              <option value="16+">16+</option>
+              <option value="18+">18+</option>
+            </select>
+          </div>
 
-    <!-- Теги -->
-    <div class="mb-3">
-      <label class="form-label">Теги</label>
-      <select name="tagIds" multiple class="form-select" size="5" required>
-        <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}"></option>
-      </select>
-      <a th:href="@{/tags/add}" class="btn btn-link p-0 mt-1">Добавить тег</a>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Количество страниц</label>
+            <input type="number" class="form-control" name="pageNumber" required>
+          </div>
 
-    <!-- Год -->
-    <div class="mb-3">
-      <label class="form-label">Год издания</label>
-      <input type="number" class="form-control" name="publishingYear" required>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Количество в наличии</label>
+            <input type="number" class="form-control" name="availableAmount" required>
+          </div>
 
-    <!-- Издательство -->
-    <div class="mb-3">
-      <label class="form-label">Издательство</label>
-      <select name="publisherId" class="form-select" required>
-        <option th:each="pub : ${publishers}" th:value="${pub.id}" th:text="${pub.name}"></option>
-      </select>
-      <a th:href="@{/publishers/add}" class="btn btn-link p-0 mt-1">Добавить издательство</a>
-    </div>
+          <div class="mb-3">
+            <label class="form-label">Цена</label>
+            <input type="number" step="0.01" class="form-control" name="price" required>
+          </div>
 
-    <!-- Кол-во -->
-    <div class="mb-3">
-      <label class="form-label">Количество в наличии</label>
-      <input type="number" class="form-control" name="availableAmount" required>
-    </div>
+        </div>
 
-    <!-- Цена -->
-    <div class="mb-3">
-      <label class="form-label">Цена</label>
-      <input type="number" step="0.01" class="form-control" name="price" required>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Сохранить книгу</button>
-  </form>
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label class="form-label">Описание</label>
+            <textarea class="form-control" rows="10" name="description" required></textarea>
+          </div>
+        </div>
+
+      </div>
+      <button type="submit" class="btn btn-primary">Сохранить книгу</button>
+    </form>
+  </div>
+
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.select2').select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: function() {
+          return $(this).data('placeholder');
+        },
+        minimumResultsForSearch: Infinity,
+      });
+      $('.select2-multiple').select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: function() {
+          return $(this).data('placeholder');
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
