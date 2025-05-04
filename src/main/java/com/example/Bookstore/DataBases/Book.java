@@ -89,11 +89,11 @@ public class Book {
     @ManyToMany(mappedBy = "favorites")
     private List<User> userFavorites = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "cart")
-    private List<User> userCart = new ArrayList<>();
+    @OneToMany(mappedBy = "book")
+    private List<UserCartItem> cartItems = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "purchase")
-    private List<User> userPurchase = new ArrayList<>();
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<OrderItems> orderItems = new ArrayList<>();
 
 
     public Long getId() { return id; }
@@ -144,9 +144,18 @@ public class Book {
     public List<User> getUserFavorites() { return userFavorites; }
     public void setUserFavorites(List<User> userFavorites) { this.userFavorites = userFavorites; }
 
-    public List<User> getUserCart() { return userCart; }
-    public void setUserCart(List<User> userCart) { this.userCart = userCart; }
+    public List<UserCartItem> getCartItems() { return cartItems; }
+    public void setCartItems(List<UserCartItem> cartItems) { this.cartItems = cartItems; }
 
-    public List<User> getUserPurchase() { return userPurchase; }
-    public void setUserPurchase(List<User> userPurchase) { this.userPurchase = userPurchase; }
+    public List<OrderItems> getOrderItems() { return orderItems; }
+    public void setOrderItems(List<OrderItems> orderItems) { this.orderItems = orderItems; }
+
+
+    public int getUserCartCount(String username) {
+        return cartItems.stream()
+                .filter(item -> item.getUser().getUsername().equals(username))
+                .findFirst()
+                .map(UserCartItem::getQuantity)
+                .orElse(0);
+    }
 }

@@ -10,7 +10,7 @@
 </head>
 <body>
 <div th:fragment="toolbar">
-    <!-- Верхняя полоса (пропадает при прокрутке) -->
+
     <div class="top-bar py-1 px-3 bg-light border-bottom d-flex justify-content-between align-items-center small text-muted">
         <div>
             <a th:href="@{/city}" class="me-3 text-decoration-none text-muted">Москва</a>
@@ -30,23 +30,19 @@
     <nav class="main-bar sticky-top bg-white shadow-sm py-2 px-3 border-bottom">
         <div class="container-fluid d-flex align-items-center">
 
-            <!-- Логотип и название -->
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img th:src="@{/images/logo.png}" alt="Логотип" class="me-2" style="height: 80px;">
                 <span class="fw-bold fs-5 text-dark">J'aime lire</span>
             </a>
 
-            <!-- Каталог -->
             <a th:href="@{/catalog}" class="btn btn-link text-dark me-3">Каталог</a>
 
-            <!-- Поисковая строка -->
             <form th:action="@{/search}" method="get" class="flex-grow-1 me-3">
                 <input type="text" name="q" class="form-control" placeholder="Поиск...">
             </form>
 
-            <!-- Иконки пользователя и действий -->
+
             <div class="d-flex align-items-center text-center" style="gap: 1rem;">
-                <!-- Профиль -->
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fa-regular fa-user" style="color: #ff6600;"></i><br>
@@ -61,25 +57,46 @@
                     </a>
                 </div>
 
-                <!-- Заказы -->
-                <div>
-                    <a th:href="@{/orders}" class="text-decoration-none text-dark">
+
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fas fa-box fa-lg"></i><br>
                         <span class="small">Заказы</span>
                     </a>
                 </div>
 
-                <!-- Избранное -->
-                <div>
-                    <a th:href="@{/favorites}" class="text-decoration-none text-dark">
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/profile/orders}" class="text-decoration-none text-dark">
+                        <i class="fas fa-box fa-lg"></i><br>
+                        <span class="small">Заказы</span>
+                    </a>
+                </div>
+
+
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fas fa-heart fa-lg"></i><br>
                         <span class="small">Избранное</span>
                     </a>
                 </div>
 
-                <!-- Корзина -->
-                <div>
-                    <a th:href="@{/cart}" class="text-decoration-none text-dark">
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/profile/favorites}" class="text-decoration-none text-dark">
+                        <i class="fas fa-heart fa-lg"></i><br>
+                        <span class="small">Избранное</span>
+                    </a>
+                </div>
+
+
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" class="text-decoration-none text-dark">
+                        <i class="fas fa-shopping-cart fa-lg"></i><br>
+                        <span class="small">Корзина</span>
+                    </a>
+                </div>
+
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/profile/cart}" class="text-decoration-none text-dark">
                         <i class="fas fa-shopping-cart fa-lg"></i><br>
                         <span class="small">Корзина</span>
                     </a>

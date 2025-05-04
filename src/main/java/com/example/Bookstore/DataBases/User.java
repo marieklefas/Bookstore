@@ -51,28 +51,17 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "user-favorites",
-            joinColumns = @JoinColumn(name = "username"),
+            name = "user_favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     private List<Book> favorites = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user-cart",
-            joinColumns = @JoinColumn(name = "username"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private List<Book> cart = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserCartItem> cartItems = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user-purchase",
-            joinColumns = @JoinColumn(name = "username"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private List<Book> purchase = new ArrayList<>();
-
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 
 
     public Long getId() { return id; }
@@ -102,9 +91,9 @@ public class User {
     public List<Book> getFavorites() { return favorites; }
     public void setFavorites(List<Book> favorites) { this.favorites = favorites; }
 
-    public List<Book> getCart() { return cart; }
-    public void setCart(List<Book> cart) { this.cart = cart; }
+    public List<UserCartItem> getCartItems() { return cartItems; }
+    public void setCartItems(List<UserCartItem> cartItems) { this.cartItems = cartItems; }
 
-    public List<Book> getPurchase() { return purchase; }
-    public void setPurchase(List<Book> purchase) { this.purchase = purchase; }
+    public List<Order> getOrders() { return orders; }
+    public void setOrders(List<Order> orders) { this.orders = orders; }
 }

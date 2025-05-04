@@ -5,6 +5,7 @@ import com.example.Bookstore.Repositories.*;
 import com.example.Bookstore.Services.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,10 +26,10 @@ public class BookController {
     @Autowired private BookRepository bookRepository;
     @Autowired private AuthorRepository authorRepository;
     @Autowired private GenreRepository genreRepository;
-    @Autowired private BookService bookService;
     @Autowired private LanguageRepository languageRepository;
     @Autowired private TagRepository tagRepository;
     @Autowired private PublisherRepository publisherRepository;
+    @Autowired private PromoCodeRepository promoCodeRepository;
 
 
     @GetMapping("/addauthor")
@@ -86,6 +88,49 @@ public class BookController {
         publisherRepository.findByName(name)
                 .orElseGet(() -> publisherRepository.save(new Publisher(name)));
         return "redirect:/managingbooks/addpublisher";
+    }
+
+
+    @GetMapping("/addpromocode")
+    public String showAddPromoCodeForm() {
+        return "BookManaging/addPromoCode";
+    }
+
+
+    @PostMapping("/addpromocode")
+    public String addPromoCode(@RequestParam String name,
+                               @RequestParam String type,
+                               @RequestParam int value,
+                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                               Model model) {
+
+        boolean hasError = false;
+
+        if ("Процентное значение".equals(type) && (value < 1 || value > 100)) {
+            model.addAttribute("error", "Процентное значение должно быть от 1 до 100");
+            hasError = true;
+        } else if (value <= 0) {
+            model.addAttribute("error", "Значение должно быть положительным числом");
+            hasError = true;
+        } else if (startDate.isAfter(endDate)) {
+            model.addAttribute("error", "Дата начала не может быть позже даты окончания");
+            hasError = true;
+        }
+
+        if (hasError) {
+            // Возвращаем введённые значения обратно в форму
+            model.addAttribute("title", name);
+            model.addAttribute("type", type);
+            model.addAttribute("value", value);
+            model.addAttribute("startDate", startDate);
+            model.addAttribute("endDate", endDate);
+            return "BookManaging/addPromoCode";
+        }
+
+        PromoCode promoCode = new PromoCode(name, type, value, startDate, endDate);
+        promoCodeRepository.save(promoCode);
+        return "redirect:/managingbooks/addpromocode";
     }
 
 

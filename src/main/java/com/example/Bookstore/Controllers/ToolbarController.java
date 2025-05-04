@@ -2,6 +2,7 @@ package com.example.Bookstore.Controllers;
 
 import com.example.Bookstore.DataBases.Book;
 import com.example.Bookstore.Repositories.BookRepository;
+import com.example.Bookstore.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +12,8 @@ import java.util.List;
 
 @Controller
 public class ToolbarController {
-    @Autowired
-    private BookRepository bookRepository;
+    @Autowired private BookRepository bookRepository;
+    @Autowired private UserRepository userRepository;
 
     @GetMapping("/")
     public String startPage() {
