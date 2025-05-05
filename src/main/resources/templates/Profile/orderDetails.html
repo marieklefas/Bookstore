@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали заказа</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:insert="~{toolbar :: toolbar}"></div>
+
+<div class="d-flex">
+    <div th:replace="~{sidebar :: sidebar('orders')}"></div>
+
+    <main class="flex-grow-1 p-4">
+        <h1 class="h4 mb-3">Заказ №<span th:text="${order.id}">123</span></h1>
+        <p class="text-muted mb-4">Оформлен: <span th:text="${#temporals.format(order.orderDate, 'd MMMM yyyy')}"></span></p>
+
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Обложка</th>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Цена за шт.</th>
+                    <th>Кол-во</th>
+                    <th>Сумма</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${order.items}">
+                    <td>
+                        <img th:src="${item.book.coverImg}" alt="Обложка"
+                             class="img-thumbnail" style="width: 60px; height: 90px; object-fit: cover;">
+                    </td>
+                    <td th:text="${item.book.title}"></td>
+                    <td th:each="a : ${item.book.authors}" th:text="${a.name + ', '}"></td>
+                    <td th:text="${item.book.price + '₽'}"></td>
+                    <td th:text="${item.quantity}"></td>
+                    <td th:text="${item.book.price * item.quantity + '₽'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <div class="text-end">
+                <p>Промокод: <strong th:text="${order.promoCode?.code ?: '—'}"></strong></p>
+                <p>Скидка: <strong th:text="${order.discount + '%'}"></strong></p>
+                <p class="fs-5">Итого: <strong th:text="${order.finalPrice + '₽'}"></strong></p>
+            </div>
+        </div>
+
+        <a th:href="@{/profile/orders}" class="btn btn-outline-secondary mt-3">← Назад к заказам</a>
+    </main>
+</div>
+</body>
+</html>

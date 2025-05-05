@@ -32,7 +32,7 @@
             <div class="d-flex justify-content-between">
               <!-- Кнопка Купить / -1+ -->
               <div class="d-flex align-items-center">
-                <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/book/cart-add/{id}(id=${book.id})}" method="post" class="me-2">
+                <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/cart/cart-add/{id}(id=${book.id})}" method="post" class="me-2">
                   <button th:if="${book.cartItems.?[user.username == #authentication.name].size() == 0}" type="submit" class="btn btn-outline-primary">
                     Купить
                   </button>
@@ -40,11 +40,11 @@
 
                 <!-- Если книга уже в корзине, показываем интерфейс - количество + -->
                 <div th:if="${#authorization.expression('isAuthenticated()') and book.cartItems.?[user.username == #authentication.name].size() > 0}" class="input-group me-2" style="width: 120px;">
-                  <form th:action="@{/book/cart-decrease/{id}(id=${book.id})}" method="post">
+                  <form th:action="@{/cart/cart-decrease/{id}(id=${book.id})}" method="post">
                     <button class="btn btn-outline-secondary" type="submit">-</button>
                   </form>
                   <input type="text" class="form-control text-center" th:value="${book.getUserCartCount(#authentication.name)}" readonly>
-                  <form th:action="@{/book/cart-increase/{id}(id=${book.id})}" method="post">
+                  <form th:action="@{/cart/cart-increase/{id}(id=${book.id})}" method="post">
                     <button class="btn btn-outline-secondary" type="submit">+</button>
                   </form>
                 </div>

@@ -3,6 +3,7 @@ package com.example.Bookstore.DataBases;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +28,23 @@ public class Order {
     private List<OrderItems> items = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "promocode_id", nullable = false)
+    @JoinColumn(name = "promocode_id")
     private PromoCode promoCode;
 
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
 
-    @Column(name = "discount", nullable = false)
+    @Column(name = "discount")
     private Double discount;
 
     @Column(name = "final_price", nullable = false)
     private Double finalPrice;
 
     @Column(name = "order_date", nullable = false)
-    private LocalDate orderDate;
+    private LocalDateTime orderDate = LocalDateTime.now();
+
+    @Column(name= "status", nullable = false)
+    private String status;
 
 
     public String getId() { return id; }
@@ -64,6 +68,9 @@ public class Order {
     public Double getFinalPrice() { return finalPrice; }
     public void setFinalPrice(Double finalPrice) { this.finalPrice = finalPrice; }
 
-    public LocalDate getOrderDate() { return orderDate; }
-    public void setOrderDate(LocalDate orderDate) { this.orderDate = orderDate; }
+    public LocalDateTime getOrderDate() { return orderDate; }
+    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

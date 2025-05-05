@@ -27,6 +27,9 @@ public class OrderItems {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "price_per_unit", nullable = false)
+    private double pricePerUnit;
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -39,4 +42,7 @@ public class OrderItems {
 
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
+
+    public double getPricePerUnit() { return pricePerUnit; }
+    public void setPricePerUnit(double pricePerUnit) { this.pricePerUnit = pricePerUnit; }
 }

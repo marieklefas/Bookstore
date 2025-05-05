@@ -17,8 +17,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/", "/home", "/login", "/register").permitAll()
-                        .requestMatchers("/profile", "/book/**").authenticated()
-                        .requestMatchers("/users_management/**", "/managingbooks/**").hasRole("ADMIN")
+                        .requestMatchers("/profile/**", "/cart/**").authenticated()
+                        .requestMatchers("/managingbooks/**").hasRole("ADMIN")
                         .requestMatchers("/my_history").hasRole("USER")
                         .anyRequest().authenticated()
                 )
