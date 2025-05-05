@@ -3,19 +3,19 @@ package com.example.Bookstore.Controllers;
 
 import com.example.Bookstore.DataBases.*;
 import com.example.Bookstore.Repositories.*;
-import jakarta.transaction.Transactional;
+import com.example.Bookstore.Services.UserService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +27,7 @@ public class ProfileController {
     @Autowired private BookRepository bookRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private OrderRepository orderRepository;
+    @Autowired private UserService userService;
 
     private PromoCode activePromo;
 
@@ -85,8 +86,78 @@ public class ProfileController {
     }
 
     @GetMapping("/personalData")
-    public String personalDataPage() {
+    public String personalDataPage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        model.addAttribute("user", user);
         return "Profile/personalData";
+    }
+
+    @PostMapping("/personalData")
+    public String updatePersonalData(@ModelAttribute("user") User formUser,
+                                     @RequestParam(required = false) String currentPassword,
+                                     @RequestParam(required = false) String newPassword,
+                                     @RequestParam(required = false) String repeatPassword,
+                                     Model model,
+                                     @AuthenticationPrincipal UserDetails userDetails){
+
+        String username = userDetails.getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        boolean valid = true;
+
+        if (formUser.getFirstName() != null) user.setFirstName(formUser.getFirstName());
+        if (formUser.getLastName() != null) user.setLastName(formUser.getLastName());
+        if (formUser.getBirthDate() != null) {
+            LocalDate bd = formUser.getBirthDate();
+            int age = Period.between(bd, LocalDate.now()).getYears();
+            if (age < 12 || age > 120) {
+                model.addAttribute("birthDateError", "Возраст должен быть от 12 до 120 лет");
+                valid = false;
+            } else {
+                user.setBirthDate(bd);
+            }
+        }
+        if (formUser.getEmail() != null) user.setEmail(formUser.getEmail());
+
+        if (currentPassword != null && !currentPassword.isBlank()) {
+            if (!userService.checkPassword(user, currentPassword)) {
+                model.addAttribute("passwordError", "Неверный текущий пароль");
+                valid = false;
+            } else {
+                if (newPassword == null || newPassword.isBlank()) {
+                    model.addAttribute("newPasswordError", "Новый пароль не может быть пустым");
+                    valid = false;
+                } else if (!newPassword.equals(repeatPassword)) {
+                    model.addAttribute("repeatPasswordError", "Пароли не совпадают");
+                    valid = false;
+                } else {
+                    user.setPassword(userService.encodePassword(newPassword));
+                }
+            }
+        } else if ((newPassword != null && !newPassword.isBlank()) ||
+                (repeatPassword != null && !repeatPassword.isBlank())) {
+            model.addAttribute("passwordError", "Введите текущий пароль для смены пароля");
+            valid = false;
+        }
+
+        if (valid) {
+            userRepository.save(user);
+            model.addAttribute("successMessage", "Изменения сохранены");
+        }
+
+        model.addAttribute("user", user);
+        return "Profile/personalData";
+    }
+
+    @PostMapping("/delete")
+    public String deleteAccount(@AuthenticationPrincipal UserDetails userDetails,
+                                HttpServletRequest request) throws ServletException {
+        String username = userDetails.getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow();
+        userRepository.delete(user);
+        request.logout();
+        return "redirect:/login?accountDeleted";
     }
 
     @GetMapping("/purchased")

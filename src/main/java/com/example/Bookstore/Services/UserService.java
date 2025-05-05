@@ -34,4 +34,12 @@ public class UserService {
         userRepository.deleteByUsername(username);
     }
 
+    public boolean checkPassword(User user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    public String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
+
 }

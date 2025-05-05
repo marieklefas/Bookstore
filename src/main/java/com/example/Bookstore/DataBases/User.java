@@ -2,6 +2,7 @@ package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -11,11 +12,11 @@ import java.util.Set;
 public class User {
     public User() {}
 
-    public User(long id, String firstName, String lastName, int age, String email, String username, String password, Set<String> role) {
+    public User(long id, String firstName, String lastName, LocalDate birthDate, String email, String username, String password, Set<String> role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.age = age;
+        this.birthDate = birthDate;
         this.email = email;
         this.username = username;
         this.password = password;
@@ -28,14 +29,14 @@ public class User {
     @Column(name= "id")
     private Long id;
 
-    @Column(name = "firstName")
+    @Column(name = "firstName", nullable = false)
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "lastName", nullable = false)
     private String lastName;
 
-    @Column(name = "age")
-    private int age;
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
 
     @Column(name = "email")
     private String email;
@@ -73,8 +74,8 @@ public class User {
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public int getAge() { return age; }
-    public void setAge(int age) { this.age = age; }
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.Bookstore.DataBases.User;
 import com.example.Bookstore.Services.UserService;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 @Controller
 public class RegistrationController {
@@ -28,7 +32,19 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user, Model model) {
+    public String registerUser(@ModelAttribute("user") User user, @RequestParam("confirmPassword") String confirmPassword, Model model) {
+        if (!user.getPassword().equals(confirmPassword)) {
+            model.addAttribute("error", "Пароли не совпадают");
+            return "register";
+        }
+
+        LocalDate birthDate = user.getBirthDate();
+        int age = Period.between(birthDate, LocalDate.now()).getYears();
+        if (age < 12 || age > 120) {
+            model.addAttribute("error", "Возраст должен быть от 12 до 120 лет");
+            return "register";
+        }
+
         if (userService.registerUser(user)) {
             return "redirect:/home";
         } else {
@@ -36,5 +52,4 @@ public class RegistrationController {
             return "register";
         }
     }
-
 }
