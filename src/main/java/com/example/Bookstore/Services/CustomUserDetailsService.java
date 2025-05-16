@@ -1,4 +1,4 @@
-package com.example.Bookstore.Authorization;
+package com.example.Bookstore.Services;
 
 import com.example.Bookstore.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Location</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:insert="~{toolbar :: toolbar}"></div>
+
+<div style="padding: 20px 40px; margin: 0 auto;">
+    <h1>Ваш текущий город: Москва</h1>
+    <p align="justify">
+        На этой странице в будущем можно будет выбрать Ваш текущий город.
+        Выбор текущего города влияет на отображение
+        <a th:href="@{/stores}">магазинов</a>
+        , которые есть в Вашем городе.
+    </p>
+
+    <p align="justify">
+        На данный момент очные точки нашего магазина существуют только в Москве.
+        Ознакомиться с перечнем адресов можно на
+        <a th:href="@{/stores}">этой странице</a>.
+    </p>
+
+    <p align="justify">
+        Мы обязательно оповестим Вас при расширении нашей сети.
+        Однажды,
+        <a th:href="@{/home}">J'aime lire</a>
+        будет в каждом городе нашей большой страны.
+    </p>
+</div>
+</body>
+</html>

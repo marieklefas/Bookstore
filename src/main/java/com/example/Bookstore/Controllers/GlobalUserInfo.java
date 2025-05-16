@@ -1,4 +1,4 @@
-package com.example.Bookstore.Authorization;
+package com.example.Bookstore.Controllers;
 
 import com.example.Bookstore.Repositories.UserRepository;
 import com.example.Bookstore.DataBases.User;

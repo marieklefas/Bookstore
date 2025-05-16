@@ -1,4 +1,4 @@
-package com.example.Bookstore.Authorization;
+package com.example.Bookstore.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +16,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**").permitAll()
-                        .requestMatchers("/", "/home", "/login", "/register").permitAll()
+                        .requestMatchers("/", "/home", "/search/**", "/catalog/**", "/login", "/register", "/location", "/stores", "/deliveryAndPaymentInfo", "/aboutAuthor").permitAll()
                         .requestMatchers("/profile/**", "/cart/**").authenticated()
-                        .requestMatchers("/managingbooks/**").hasRole("ADMIN")
+                        .requestMatchers("/managingBooks/**").hasRole("ADMIN")
                         .requestMatchers("/my_history").hasRole("USER")
                         .anyRequest().authenticated()
                 )
