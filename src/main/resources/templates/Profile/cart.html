@@ -31,59 +31,68 @@
                 </div>
 
                 <div class="list-group">
-        <div class="list-group-item mb-3" th:each="item : ${cartItems}">
-            <div class="row align-items-center">
-                <!-- Обложка -->
-                <div class="col-2">
-                    <img th:src="@{${item.book.coverImg}}" class="img-fluid" alt="Обложка" style="max-height: 150px;">
-                </div>
+                    <div class="list-group-item mb-3" th:each="item : ${cartItems}">
+                        <div class="row align-items-center">
+                            <!-- Обложка -->
+                            <div class="col-2">
+                                <a th:href="@{/books/{id}(id=${item.book.id})}" style="text-decoration: none; color: inherit;">
+                                    <img th:src="@{${item.book.coverImg}}" class="img-fluid" alt="Обложка" style="max-height: 150px;">
+                                </a>
+                            </div>
 
-                <!-- Название и автор -->
-                <div class="col-3">
-                    <h5 th:text="${item.book.title}">Название</h5>
-                    <p class="text-muted mb-1" th:each="a : ${item.book.authors}" th:text="${a.name + ', '}">Автор</p>
-                </div>
+                            <!-- Название и автор -->
+                            <div class="col-3">
+                                <a th:href="@{/books/{id}(id=${item.book.id})}" style="text-decoration: none; color: inherit;">
+                                    <h5 th:text="${item.book.title}">Название</h5>
+                                    <p class="text-muted small mb-1"
+                                       style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                        <span th:each="a, iterStat : ${item.book.authors}">
+                                            <span th:text="${a.name}"></span>
+                                            <span th:unless="${iterStat.last}">, </span>
+                                        </span>
+                                    </p>
+                                </a>
+                            </div>
 
-                <!-- Кнопки +/- -->
-                <div class="col-3">
-                    <div class="input-group mb-2" style="max-width: 150px;">
-                        <form th:action="@{/cart/cart-decrease/{id}(id=${item.book.id})}" method="post">
-                            <button class="btn btn-outline-secondary" type="submit" th:disabled="${item.quantity == 1}">-</button>
-                        </form>
-                        <input type="text" class="form-control text-center" th:value="${item.quantity}" readonly>
-                        <form th:action="@{/cart/cart-increase/{id}(id=${item.book.id})}" method="post">
-                            <button class="btn btn-outline-secondary" type="submit">+</button>
-                        </form>
+                            <!-- Кнопки +/- -->
+                            <div class="col-3">
+                                <div class="input-group mb-2" style="max-width: 150px;">
+                                    <form th:action="@{/cart/cart-decrease/{id}(id=${item.book.id})}" method="post" class="decrease-cart-form">
+                                        <button class="btn btn-outline-secondary" type="submit" th:disabled="${item.quantity == 1}">-</button>
+                                    </form>
+                                    <input type="text" class="form-control text-center" th:value="${item.quantity}" readonly>
+                                    <form th:action="@{/cart/cart-increase/{id}(id=${item.book.id})}" method="post" class="increase-cart-form">
+                                        <button class="btn btn-outline-secondary" type="submit">+</button>
+                                    </form>
+                                </div>
+                                <div th:if="${item.quantity > 1}" class="text-muted small">
+                                    <span th:text="'Цена за штуку: ' + ${item.book.price} + ' ₽'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Общая цена -->
+                            <div class="col-2">
+                                <h5 th:text="${item.book.price * item.quantity} + ' ₽'"></h5>
+                            </div>
+
+                            <!-- Кнопки действий -->
+                            <div class="col-2 d-flex flex-column gap-2">
+                                <form th:action="@{/profile/toggle-favorite/{id}(id=${item.book.id})}" method="post" class="toggle-favorite-form">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fa"
+                                           th:class="${item.book.userFavorites.?[username == #authentication.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
+                                    </button>
+                                </form>
+
+                                <form th:action="@{/book/cart-remove/{id}(id=${item.book.id})}" method="post">
+                                    <button type="submit" class="btn btn-outline-secondary">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div th:if="${item.quantity > 1}" class="text-muted small">
-                        <span th:text="'Цена за штуку: ' + ${item.book.price} + ' ₽'"></span>
-                    </div>
                 </div>
-
-                <!-- Общая цена -->
-                <div class="col-2">
-                    <h5 th:text="${item.book.price * item.quantity} + ' ₽'"></h5>
-                </div>
-
-                <!-- Кнопки действий -->
-                <div class="col-2 d-flex flex-column gap-2">
-                    <form th:action="@{/profile/toggle-favorite/{id}(id=${item.book.id})}" method="get">
-                        <button type="submit" class="btn btn-outline-danger">
-                            <i class="fa"
-                               th:class="${item.book.userFavorites.?[username == #authentication.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
-                        </button>
-                    </form>
-
-                    <form th:action="@{/book/cart-remove/{id}(id=${item.book.id})}" method="post">
-                        <button type="submit" class="btn btn-outline-secondary">
-                            <i class="fa-regular fa-trash-can"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
             </div>
         </div>
 
@@ -129,5 +138,51 @@
 
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Обработка добавления в корзину
+        $('.add-to-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                // Обновляем только нужные элементы на странице
+                location.reload(); // Временное решение - потом можно сделать более точечное обновление
+            });
+            return false;
+        });
+
+        // Обработка увеличения количества
+        $('.increase-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                location.reload();
+            });
+            return false;
+        });
+
+        // Обработка уменьшения количества
+        $('.decrease-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                location.reload();
+            });
+            return false;
+        });
+
+        // Обработка добавления в избранное
+        $('.toggle-favorite-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                location.reload();
+            });
+            return false;
+        });
+    });
+</script>
 </body>
 </html>

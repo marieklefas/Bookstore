@@ -7,6 +7,8 @@ import com.example.Bookstore.Services.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -181,9 +183,10 @@ public class ProfileController {
     }
 
 
-    @GetMapping("/toggle-favorite/{id}")
-    public String toggleFavorite(@PathVariable Long id, Principal principal) {
-        if (principal == null) return "redirect:/login";
+    @PostMapping("/toggle-favorite/{id}")
+    @ResponseBody
+    public ResponseEntity<?> toggleFavorite(@PathVariable Long id, Principal principal) {
+        if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Book book = bookRepository.findById(id).orElseThrow();
 
@@ -194,6 +197,6 @@ public class ProfileController {
         }
 
         userRepository.save(user);
-        return "redirect:/home";
+        return ResponseEntity.ok().build();
     }
 }

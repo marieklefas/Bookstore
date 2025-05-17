@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${book.title} + ' | Bookstore'">Book Details | Bookstore</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:insert="~{toolbar :: toolbar}"></div>
+
+<div class="container my-5">
+  <!-- Кнопка "Назад" -->
+  <div class="mb-4">
+    <button class="btn btn-outline-secondary" onclick="goBack()">
+      <i class="bi bi-arrow-left"></i> Назад
+    </button>
+  </div>
+
+  <div class="row">
+    <!-- Обложка книги -->
+    <div class="col-md-4 mb-4">
+      <div class="card border-0">
+        <img th:src="@{${book.coverImg}}" class="img-fluid rounded" alt="Обложка книги" style="max-height: 500px; object-fit: contain;">
+      </div>
+    </div>
+
+    <!-- Информация о книге -->
+    <div class="col-md-8">
+      <h2 th:text="${book.title}">Название книги</h2>
+
+      <!-- Авторы -->
+      <p class="text-muted mb-3">
+                <span th:each="a, iterStat : ${book.authors}">
+                    <span th:text="${a.name}"></span>
+                    <span th:unless="${iterStat.last}">, </span>
+                </span>
+      </p>
+
+      <!-- Цена и кнопки -->
+      <div class="d-flex align-items-center mb-4">
+        <h4 class="me-4" th:text="${book.price} + ' ₽'">0 ₽</h4>
+
+        <!-- Кнопка Купить / -1+ -->
+        <div class="d-flex align-items-center">
+          <form th:if="${#authorization.expression('isAuthenticated()')}"
+                th:action="@{/cart/cart-add/{id}(id=${book.id})}"
+                method="post"
+                class="me-2 add-to-cart-form">
+            <button th:if="${book.cartItems.?[user.username == #authentication.name].size() == 0}"
+                    type="submit" class="btn btn-outline-primary">
+              Купить</button>
+          </form>
+
+          <!-- Если книга уже в корзине, показываем интерфейс - количество + -->
+          <div th:if="${#authorization.expression('isAuthenticated()') and book.cartItems.?[user.username == #authentication.name].size() > 0}"
+               class="input-group me-2" style="width: 120px;">
+            <form th:action="@{/cart/cart-decrease/{id}(id=${book.id})}"
+                  method="post"
+                  class="decrease-cart-form">
+              <button class="btn btn-outline-secondary" type="submit">-</button>
+            </form>
+            <input type="text" class="form-control text-center" th:value="${book.getUserCartCount(#authentication.name)}" readonly>
+            <form th:action="@{/cart/cart-increase/{id}(id=${book.id})}"
+                  method="post"
+                  class="increase-cart-form">
+              <button class="btn btn-outline-secondary" type="submit">+</button>
+            </form>
+          </div>
+
+          <!-- Если неавторизован — кнопка ведет на login -->
+          <form th:if="${!#authorization.expression('isAuthenticated()')}" onsubmit="window.location.href='/login'; return false;" class="me-2">
+            <button type="submit" class="btn btn-outline-primary">Купить</button>
+          </form>
+        </div>
+
+        <!-- Кнопка избранного -->
+        <div class="d-flex align-items-center">
+          <form th:if="${#authorization.expression('isAuthenticated()')}"
+                th:action="@{/profile/toggle-favorite/{id}(id=${book.id})}"
+                method="post"
+                class="toggle-favorite-form">
+            <button type="submit" class="btn btn-outline-danger">
+              <i class="fa"
+                 th:class="${book.userFavorites.?[username == #authentication?.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'">
+              </i>
+            </button>
+          </form>
+          <form th:if="${!#authorization.expression('isAuthenticated()')}" onsubmit="window.location.href='/login'; return false;" class="me-2">
+            <button type="submit" class="btn btn-outline-danger">
+              <i class="fa"
+                 th:class="${book.userFavorites.?[username == #authentication?.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'">
+              </i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Основная информация -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">О книге</h5>
+          <p class="card-text" th:text="${book.description}">Описание книги</p>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <p><strong>Издательство:</strong> <span th:text="${book.publisher?.name} ?: 'Не указано'">Не указано</span></p>
+              <p><strong>Год издания:</strong> <span th:text="${book.publishingYear} ?: 'Не указан'">Не указан</span></p>
+              <p><strong>Язык:</strong> <span th:text="${book.language?.name} ?: 'Не указан'">Не указан</span></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Количество страниц:</strong> <span th:text="${book.pageNumber} ?: 'Не указано'">Не указано</span></p>
+              <p><strong>Тип обложки:</strong> <span th:text="${book.coverType} ?: 'Не указан'">Не указан</span></p>
+              <p><strong>Возрастные ограничения:</strong> <span th:text="${book.ageLimit} ?: 'Не указаны'">Не указаны</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Жанры и теги -->
+      <div class="d-flex flex-wrap gap-2 mb-4">
+        <span th:each="genre : ${book.genres}" class="badge bg-secondary" th:text="${genre.name}">Жанр</span>
+        <span th:each="tag : ${book.tags}" class="badge bg-info text-dark" th:text="${tag.name}">Тег</span>
+      </div>
+
+      <!-- Доступность -->
+      <div class="alert" th:class="${book.availableAmount > 0} ? 'alert-success' : 'alert-warning'">
+        <span th:if="${book.availableAmount > 0}" th:text="'В наличии: ' + ${book.availableAmount} + ' шт.'">В наличии</span>
+        <span th:if="${book.availableAmount <= 0}">Нет в наличии</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  // Функция для возврата на предыдущую страницу
+  function goBack() {
+    window.history.back();
+  }
+
+  $(document).ready(function() {
+    // Обработка добавления в корзину
+    $('.add-to-cart-form').on('submit', function(e) {
+      e.preventDefault();
+      const form = $(this);
+      $.post(form.attr('action'), form.serialize(), function() {
+        // Обновляем только нужные элементы на странице
+        location.reload(); // Временное решение - потом можно сделать более точечное обновление
+      });
+      return false;
+    });
+
+    // Обработка увеличения количества
+    $('.increase-cart-form').on('submit', function(e) {
+      e.preventDefault();
+      const form = $(this);
+      $.post(form.attr('action'), form.serialize(), function() {
+        location.reload();
+      });
+      return false;
+    });
+
+    // Обработка уменьшения количества
+    $('.decrease-cart-form').on('submit', function(e) {
+      e.preventDefault();
+      const form = $(this);
+      $.post(form.attr('action'), form.serialize(), function() {
+        location.reload();
+      });
+      return false;
+    });
+
+    // Обработка добавления в избранное
+    $('.toggle-favorite-form').on('submit', function(e) {
+      e.preventDefault();
+      const form = $(this);
+      $.post(form.attr('action'), form.serialize(), function() {
+        location.reload();
+      });
+      return false;
+    });
+  });
+
+
+
+</script>
+</body>
+</html>

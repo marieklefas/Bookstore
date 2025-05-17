@@ -159,39 +159,49 @@
 
             <div class="d-flex flex-wrap gap-3">
                 <div class="card border-0" style="width: 180px;" th:each="book : ${books}">
-                    <img th:src="@{${book.coverImg}}" class="card-img-top" alt="Обложка книги" style="height: 200px; object-fit: contain;">
-                    <div class="card-body p-2">
-                        <h6 class="mb-1"
-                            style="min-height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;"
-                            th:text="${book.title}">Название книги</h6>
+                    <a th:href="@{/books/{id}(id=${book.id})}" style="text-decoration: none; color: inherit;">
+                        <img th:src="@{${book.coverImg}}" class="card-img-top" alt="Обложка книги" style="height: 200px; object-fit: contain;">
+                        <div class="card-body p-2">
+                            <h6 class="mb-1"
+                                style="min-height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;"
+                                th:text="${book.title}">Название книги</h6>
 
-                        <p class="text-muted small mb-1"
-                           style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                            <span th:each="a, iterStat : ${book.authors}">
-                                <span th:text="${a.name}"></span>
-                                <span th:unless="${iterStat.last}">, </span>
-                            </span>
-                        </p>
+                            <p class="text-muted small mb-1"
+                               style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                <span th:each="a, iterStat : ${book.authors}">
+                                    <span th:text="${a.name}"></span>
+                                    <span th:unless="${iterStat.last}">, </span>
+                                </span>
+                            </p>
+                            <p class="fw-bold mb-2" th:text="${book.price} + ' ₽'">Цена</p>
+                        </div>
+                    </a>
 
-                        <p class="fw-bold mb-2" th:text="${book.price} + ' ₽'">Цена</p>
-
-
+                    <div class="card-body p-2 pt-0">
                         <div class="d-flex justify-content-between">
                             <!-- Кнопка Купить / -1+ -->
                             <div class="d-flex align-items-center">
-                                <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/cart/cart-add/{id}(id=${book.id})}" method="post" class="me-2">
-                                    <button th:if="${book.cartItems.?[user.username == #authentication.name].size() == 0}" type="submit" class="btn btn-outline-primary">
-                                        Купить
-                                    </button>
+                                <form th:if="${#authorization.expression('isAuthenticated()')}"
+                                      th:action="@{/cart/cart-add/{id}(id=${book.id})}"
+                                      method="post"
+                                      class="me-2 add-to-cart-form">
+                                    <button th:if="${book.cartItems.?[user.username == #authentication.name].size() == 0}"
+                                            type="submit" class="btn btn-outline-primary">
+                                        Купить</button>
                                 </form>
 
                                 <!-- Если книга уже в корзине, показываем интерфейс - количество + -->
-                                <div th:if="${#authorization.expression('isAuthenticated()') and book.cartItems.?[user.username == #authentication.name].size() > 0}" class="input-group me-2" style="width: 120px;">
-                                    <form th:action="@{/cart/cart-decrease/{id}(id=${book.id})}" method="post">
+                                <div th:if="${#authorization.expression('isAuthenticated()') and book.cartItems.?[user.username == #authentication.name].size() > 0}"
+                                     class="input-group me-2" style="width: 120px;">
+                                    <form th:action="@{/cart/cart-decrease/{id}(id=${book.id})}"
+                                          method="post"
+                                          class="decrease-cart-form">
                                         <button class="btn btn-outline-secondary" type="submit">-</button>
                                     </form>
                                     <input type="text" class="form-control text-center" th:value="${book.getUserCartCount(#authentication.name)}" readonly>
-                                    <form th:action="@{/cart/cart-increase/{id}(id=${book.id})}" method="post">
+                                    <form th:action="@{/cart/cart-increase/{id}(id=${book.id})}"
+                                          method="post"
+                                          class="increase-cart-form">
                                         <button class="btn btn-outline-secondary" type="submit">+</button>
                                     </form>
                                 </div>
@@ -202,18 +212,27 @@
                                 </form>
                             </div>
 
-                            <form th:action="@{/profile/toggle-favorite/{id}(id=${book.id})}"
-                                  th:method="get"
-                                  th:onsubmit="${#authorization.expression('isAuthenticated()')} ? null : 'window.location.href=\'/login\'; return false;'"
-                                  class="me-2">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    <i class="fa"
-                                       th:class="${book.userFavorites.?[username == #authentication?.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'">
-                                    </i>
-                                </button>
-                            </form>
+                            <!-- Форма для избранного -->
+                            <div class="d-flex align-items-center">
+                                <form th:if="${#authorization.expression('isAuthenticated()')}"
+                                      th:action="@{/profile/toggle-favorite/{id}(id=${book.id})}"
+                                      method="post"
+                                      class="toggle-favorite-form">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fa"
+                                           th:class="${book.userFavorites.?[username == #authentication?.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'">
+                                        </i>
+                                    </button>
+                                </form>
+                                <form th:if="${!#authorization.expression('isAuthenticated()')}" onsubmit="window.location.href='/login'; return false;" class="me-2">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fa"
+                                           th:class="${book.userFavorites.?[username == #authentication?.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'">
+                                        </i>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -227,6 +246,47 @@
 <script src="https://cdn.jsdelivr.net/npm/nouislider@15.5.1/dist/nouislider.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Обработка добавления в корзину
+        $('.add-to-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                // Обновляем только нужные элементы на странице
+                location.reload(); // Временное решение - потом можно сделать более точечное обновление
+            });
+            return false;
+        });
+
+        // Обработка увеличения количества
+        $('.increase-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                location.reload();
+            });
+            return false;
+        });
+
+        // Обработка уменьшения количества
+        $('.decrease-cart-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                location.reload();
+            });
+            return false;
+        });
+
+        // Обработка добавления в избранное
+        $('.toggle-favorite-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            $.post(form.attr('action'), form.serialize(), function() {
+                location.reload();
+            });
+            return false;
+        });
+
         // Инициализация Select2 для множественного выбора
         $('.filter-select').each(function () {
             const $select = $(this);

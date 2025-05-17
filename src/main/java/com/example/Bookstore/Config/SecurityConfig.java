@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**").permitAll()
-                        .requestMatchers("/", "/home", "/search/**", "/catalog/**", "/login", "/register", "/location", "/stores", "/deliveryAndPaymentInfo", "/aboutAuthor").permitAll()
+                        .requestMatchers("/", "/home", "/books/**", "/search/**", "/catalog/**", "/login", "/register", "/location", "/stores", "/deliveryAndPaymentInfo", "/aboutAuthor").permitAll()
                         .requestMatchers("/profile/**", "/cart/**").authenticated()
                         .requestMatchers("/managingBooks/**").hasRole("ADMIN")
                         .requestMatchers("/my_history").hasRole("USER")

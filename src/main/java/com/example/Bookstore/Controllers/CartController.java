@@ -11,6 +11,8 @@ import com.example.Bookstore.Repositories.UserRepository;
 import com.example.Bookstore.Services.OrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -68,8 +70,9 @@ public class CartController {
     }
 
     @PostMapping("/cart-add/{bookId}")
-    public String addToCart(@PathVariable Long bookId, Principal principal) {
-        if (principal == null) return "redirect:/login";
+    @ResponseBody
+    public ResponseEntity<?> addToCart(@PathVariable Long bookId, Principal principal) {
+        if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Book book = bookRepository.findById(bookId).orElseThrow();
@@ -82,17 +85,19 @@ public class CartController {
             userCartItemRepository.save(item);
         }
 
-        return "redirect:/home";
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/cart-increase/{bookId}")
-    public String increaseCart(@PathVariable Long bookId, Principal principal) {
+    @ResponseBody
+    public ResponseEntity<?> increaseCart(@PathVariable Long bookId, Principal principal) {
         return addToCart(bookId, principal); // Повторно используем
     }
 
     @PostMapping("/cart-decrease/{bookId}")
-    public String decreaseCart(@PathVariable Long bookId, Principal principal) {
-        if (principal == null) return "redirect:/login";
+    @ResponseBody
+    public ResponseEntity<?> decreaseCart(@PathVariable Long bookId, Principal principal) {
+        if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Book book = bookRepository.findById(bookId).orElseThrow();
 
@@ -105,7 +110,7 @@ public class CartController {
             }
         });
 
-        return "redirect:/home";
+        return ResponseEntity.ok().build();
     }
 
     @Transactional
