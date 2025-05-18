@@ -30,6 +30,6 @@ public class BookController {
         }
 
         model.addAttribute("book", book);
-        return "showBook";
+        return "bookCard";
     }
 }

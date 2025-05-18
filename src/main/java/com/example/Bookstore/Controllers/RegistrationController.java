@@ -22,34 +22,34 @@ public class RegistrationController {
 
     @GetMapping("/login")
     public String personlogin() {
-        return "login";
+        return "Toolbar/login";
     }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";
+        return "Toolbar/register";
     }
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") User user, @RequestParam("confirmPassword") String confirmPassword, Model model) {
         if (!user.getPassword().equals(confirmPassword)) {
             model.addAttribute("error", "Пароли не совпадают");
-            return "register";
+            return "Toolbar/register";
         }
 
         LocalDate birthDate = user.getBirthDate();
         int age = Period.between(birthDate, LocalDate.now()).getYears();
         if (age < 12 || age > 120) {
             model.addAttribute("error", "Возраст должен быть от 12 до 120 лет");
-            return "register";
+            return "Toolbar/register";
         }
 
         if (userService.registerUser(user)) {
             return "redirect:/home";
         } else {
             model.addAttribute("error", "Пользователь уже существует");
-            return "register";
+            return "Toolbar/register";
         }
     }
 }

@@ -91,7 +91,7 @@ public class CartController {
     @PostMapping("/cart-increase/{bookId}")
     @ResponseBody
     public ResponseEntity<?> increaseCart(@PathVariable Long bookId, Principal principal) {
-        return addToCart(bookId, principal); // Повторно используем
+        return addToCart(bookId, principal);
     }
 
     @PostMapping("/cart-decrease/{bookId}")
@@ -123,7 +123,7 @@ public class CartController {
 
         userCartItemRepository.deleteByUserAndBook(user, book);
 
-        return "redirect:/profile/cart";
+        return "redirect:/cart";
     }
 
     @Transactional

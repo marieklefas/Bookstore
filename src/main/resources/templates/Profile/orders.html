@@ -9,10 +9,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<div th:insert="~{toolbar :: toolbar}"></div>
+<div th:insert="~{Fragments/toolbar :: toolbar}"></div>
 
 <div class="d-flex">
-    <div th:replace="~{sidebar :: sidebar('orders')}"></div>
+    <div th:replace="~{Fragments/sidebar :: sidebar('orders')}"></div>
 
     <main class="flex-grow-1 p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">

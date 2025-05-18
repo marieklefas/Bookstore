@@ -53,32 +53,32 @@ public class ToolbarController {
         }
 
         model.addAttribute("tags", tagBookMap);
-        return "mainPage";
+        return "Toolbar/mainPage";
     }
 
     @GetMapping("/location")
     public String cityPage() {
-        return "location";
+        return "Toolbar/location";
     }
 
     @GetMapping("/stores")
     public String storesPage() {
-        return "storesInfo";
+        return "Toolbar/storesInfo";
     }
 
     @GetMapping("/deliveryAndPaymentInfo")
     public String dandpPage() {
-        return "deliveryAndPaymentInfo";
+        return "Toolbar/deliveryAndPaymentInfo";
     }
 
     @GetMapping("/managingBooks")
     public String managingBooksPage() {
-        return "BookManaging/managing";
+        return "Managing/managing";
     }
 
     @GetMapping("/aboutAuthor")
     public String aboutPage() {
-        return "aboutAuthor";
+        return "Toolbar/aboutAuthor";
     }
 
     @GetMapping("/catalog")
@@ -213,7 +213,7 @@ public class ToolbarController {
         model.addAttribute("selectedCoverTypes", coverTypes);
         model.addAttribute("selectedAgeLimits", ageLimits);
 
-        return "catalog";
+        return "Toolbar/catalog";
     }
 
     @GetMapping("/search")
@@ -360,7 +360,7 @@ public class ToolbarController {
         model.addAttribute("selectedCoverTypes", coverTypes);
         model.addAttribute("selectedAgeLimits", ageLimits);
 
-        return "catalog";
+        return "Toolbar/catalog";
     }
 
     @GetMapping("/profile")

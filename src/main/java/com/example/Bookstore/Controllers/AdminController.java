@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/managingbooks")
+@RequestMapping("/managing")
 public class AdminController {
     @Autowired private BookRepository bookRepository;
     @Autowired private AuthorRepository authorRepository;
@@ -33,66 +33,66 @@ public class AdminController {
 
     @GetMapping("/addauthor")
     public String showAddAuthorForm() {
-        return "BookManaging/addAuthor";
+        return "Managing/addAuthor";
     }
 
     @PostMapping("/addauthor")
     public String addAuthor(@RequestParam String name) {
         authorRepository.save(new Author(name));
-        return "redirect:/managingbooks/addauthor";
+        return "redirect:/managing/addauthor";
     }
 
     @GetMapping("/addgenre")
     public String showAddGenreForm() {
-        return "BookManaging/addGenre";
+        return "Managing/addGenre";
     }
 
     @PostMapping("/addgenre")
     public String addGenre(@RequestParam String name) {
         genreRepository.save(new Genre(name));
-        return "redirect:/managingbooks/addgenre";
+        return "redirect:/managing/addgenre";
     }
 
     @GetMapping("/addlanguage")
     public String showAddLanguageForm() {
-        return "BookManaging/addLanguage";
+        return "Managing/addLanguage";
     }
 
     @PostMapping("/addlanguage")
     public String addLanguage(@RequestParam String name) {
         languageRepository.findByName(name)
                 .orElseGet(() -> languageRepository.save(new Language(name)));
-        return "redirect:/managingbooks/addlanguage";
+        return "redirect:/managing/addlanguage";
     }
 
     @GetMapping("/addtag")
     public String showAddTagForm() {
-        return "BookManaging/addTag";
+        return "Managing/addTag";
     }
 
     @PostMapping("/addtag")
     public String addTag(@RequestParam String name) {
         tagRepository.findByName(name)
                 .orElseGet(() -> tagRepository.save(new Tag(name)));
-        return "redirect:/managingbooks/addtag";
+        return "redirect:/managing/addtag";
     }
 
     @GetMapping("/addpublisher")
     public String showAddPublisherForm() {
-        return "BookManaging/addPublisher";
+        return "Managing/addPublisher";
     }
 
     @PostMapping("/addpublisher")
     public String addPublisher(@RequestParam String name) {
         publisherRepository.findByName(name)
                 .orElseGet(() -> publisherRepository.save(new Publisher(name)));
-        return "redirect:/managingbooks/addpublisher";
+        return "redirect:/managing/addpublisher";
     }
 
 
     @GetMapping("/addpromocode")
     public String showAddPromoCodeForm() {
-        return "BookManaging/addPromoCode";
+        return "Managing/addPromoCode";
     }
 
 
@@ -124,12 +124,12 @@ public class AdminController {
             model.addAttribute("value", value);
             model.addAttribute("startDate", startDate);
             model.addAttribute("endDate", endDate);
-            return "BookManaging/addPromoCode";
+            return "Managing/addPromoCode";
         }
 
         PromoCode promoCode = new PromoCode(name, type, value, startDate, endDate);
         promoCodeRepository.save(promoCode);
-        return "redirect:/managingbooks/addpromocode";
+        return "redirect:/managing/addpromocode";
     }
 
 
@@ -144,7 +144,7 @@ public class AdminController {
         model.addAttribute("publishers", publisherRepository.findAll());
         model.addAttribute("coverTypes");
         model.addAttribute("ageLimits");
-        return "BookManaging/addBook";
+        return "Managing/addBook";
     }
 
     @PostMapping("/addbook")
@@ -179,13 +179,13 @@ public class AdminController {
         publisherRepository.findById(publisherId).ifPresent(book::setPublisher);
 
         bookRepository.save(book);
-        return "redirect:/managingbooks/addbook";
+        return "redirect:/managing/addbook";
     }
 
     @GetMapping("/editbooks")
     public String getAllBooks(Model model) {
         List<Book> books = bookRepository.findAll();
         model.addAttribute("books", books);
-        return "BookManaging/editBooks";
+        return "Managing/editBooks";
     }
 }
