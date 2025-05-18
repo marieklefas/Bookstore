@@ -5,6 +5,8 @@ import com.example.Bookstore.Repositories.*;
 import com.example.Bookstore.Services.BookService;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,7 +73,7 @@ public class ToolbarController {
         return "Toolbar/deliveryAndPaymentInfo";
     }
 
-    @GetMapping("/managingBooks")
+    @GetMapping("/managing")
     public String managingBooksPage() {
         return "Managing/managing";
     }
@@ -362,10 +364,4 @@ public class ToolbarController {
 
         return "Toolbar/catalog";
     }
-
-    @GetMapping("/profile")
-    public String accountPage() {
-        return "Profile/profile";
-    }
-
 }

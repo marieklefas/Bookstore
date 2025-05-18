@@ -12,7 +12,7 @@
 <body>
 <div th:insert="~{Fragments/toolbar :: toolbar}"></div>
 
-<div th:with="baseUrl='/managingbooks'" class="container mt-5">
+<div th:with="baseUrl='/managing'" class="container mt-5">
   <h2 class="mb-4">Управление библиотекой</h2>
 
   <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -89,12 +89,13 @@
     <div class="col">
       <div class="card h-100 border-info">
         <div class="card-body text-center">
-          <h5 class="card-title">Список всех книг</h5>
-          <p class="card-text">Посмотреть все книги на сайте</p>
-          <a th:href="@{${baseUrl + '/editbooks'}}" class="btn btn-info w-100 text-white">Перейти</a>
+          <h5 class="card-title">Статистика</h5>
+          <p class="card-text">Статистика по магазину</p>
+          <a th:href="@{${baseUrl + '/statistics'}}" class="btn btn-info w-100 text-white">Перейти</a>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 </body>

@@ -14,14 +14,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.stream.Collectors;
 
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/profile")
@@ -31,7 +29,77 @@ public class ProfileController {
     @Autowired private OrderRepository orderRepository;
     @Autowired private UserService userService;
 
-    private PromoCode activePromo;
+    @GetMapping
+    public String profilePage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        List<Order> allOrders = orderRepository.findByUser(user);
+        List<Book> favorites = new ArrayList<>(user.getFavorites());
+        List<Book> purchasedBooks = new ArrayList<>();
+        for (Order order : allOrders) {
+            for (OrderItems orderItem : order.getItems()) {
+                purchasedBooks.add(orderItem.getBook());
+            }
+        }
+
+        // Calculate statistics for charts
+        // Genres
+        Map<String, Long> genreCounts = favorites.stream()
+                .flatMap(book -> book.getGenres().stream())
+                .collect(Collectors.groupingBy(
+                        genre -> genre.getName() != null ? genre.getName() : "Неизвестный жанр",
+                        Collectors.counting()
+                ));
+
+        // Tags
+        Map<String, Long> tagCounts = favorites.stream()
+                .flatMap(book -> book.getTags().stream())
+                .collect(Collectors.groupingBy(
+                        tag -> tag.getName() != null ? tag.getName() : "Неизвестный тег",
+                        Collectors.counting()
+                ));
+
+        // Authors
+        Map<String, Long> authorCounts = favorites.stream()
+                .flatMap(book -> book.getAuthors().stream())
+                .collect(Collectors.groupingBy(
+                        author -> author.getName() != null ? author.getName() : "Неизвестный автор",
+                        Collectors.counting()
+                ));
+
+        // Languages
+        Map<String, Long> languageCounts = favorites.stream()
+                .map(Book::getLanguage)
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        language -> language.getName() != null ? language.getName() : "Неизвестный язык",
+                        Collectors.counting()
+                ));
+
+        // Cover Types
+        Map<String, Long> coverTypeCounts = favorites.stream()
+                .map(Book::getCoverType)
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        coverType -> coverType,
+                        Collectors.counting()
+                ));
+
+        // Add statistics to model
+        model.addAttribute("genreCounts", genreCounts);
+        model.addAttribute("tagCounts", tagCounts);
+        model.addAttribute("authorCounts", authorCounts);
+        model.addAttribute("languageCounts", languageCounts);
+        model.addAttribute("coverTypeCounts", coverTypeCounts);
+
+        // Основные счетчики
+        model.addAttribute("ordersCount", allOrders.size());
+        model.addAttribute("favoritesCount", favorites.size());
+        model.addAttribute("purchasedCount", purchasedBooks.stream().count());
+
+        return "Profile/profile";
+    }
 
     @GetMapping("/orders")
     public String ordersPage(Model model, @AuthenticationPrincipal UserDetails userDetails) {

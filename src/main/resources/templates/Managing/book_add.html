@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div th:insert="~{Fragments/toolbar :: toolbar}"></div>
+
+<div class="container my-5">
+    <div class="mb-4">
+        <a th:href="@{/managing}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+    </div>
+
+    <div class="mb-4">
+        <h2 class="d-inline-block ms-3">Добавить книгу</h2>
+    </div>
+
+    <form th:action="@{/managing/addbook}" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Обложка книги -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-0">
+                    <img th:src="@{${book.coverImg}}" id="coverPreview" class="img-fluid rounded mb-3" alt="Обложка книги" style="max-height: 500px; object-fit: contain;" required>
+                    <div class="form-group">
+                        <label class="form-label">Обложка</label>
+                        <input type="file" class="form-control" id="coverFile" name="coverFile" onchange="previewImage(this)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о книге -->
+            <div class="col-md-8">
+                <div class="form-group mb-3">
+                    <label class="form-label">Название книги</label>
+                    <input type="text" class="form-control" id="title" name="title" th:value="${book.title}" required>
+                </div>
+
+                <!-- Авторы -->
+                <div class="form-group mb-3">
+                    <label class="form-label">Авторы</label>
+                    <select name="authorIds" multiple class="form-select select2-multiple" data-placeholder="Выберите автора" required>
+                        <option></option>
+                        <option th:each="author : ${authors}"
+                                th:value="${author.id}"
+                                th:text="${author.name}"
+                                th:selected="${selectedAuthorIds != null and selectedAuthorIds.contains(author.id)}"></option>
+                    </select>
+                </div>
+
+                <!-- Цена и количество -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Цена (₽)</label>
+                            <input type="number" step="0.01" class="form-control" name="price" th:value="${book.price}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Количество в наличии</label>
+                            <input type="number" class="form-control" name="availableAmount" th:value="${book.availableAmount}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Основная информация -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">О книге</h5>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Описание</label>
+                            <textarea class="form-control" rows="10" name="description" required th:text="${book.description}"></textarea>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Издательство</label>
+                                    <select name="publisherId" class="form-select select2" data-placeholder="Выберите издательство" required>
+                                        <option></option>
+                                        <option th:each="pub : ${publishers}"
+                                                th:value="${pub.id}"
+                                                th:text="${pub.name}"
+                                                th:selected="${selectedPublisherId != null and selectedPublisherId == pub.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Год издания</label>
+                                    <input type="number" class="form-control" name="publishingYear" th:value="${book.publishingYear}" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Язык</label>
+                                    <select name="languageId" class="form-select select2" data-placeholder="Выберите язык" required>
+                                        <option></option>
+                                        <option th:each="lang : ${languages}"
+                                                th:value="${lang.id}"
+                                                th:text="${lang.name}"
+                                                th:selected="${selectedLanguageId != null and selectedLanguageId == lang.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Количество страниц</label>
+                                    <input type="number" class="form-control" name="pageNumber" th:value="${book.pageNumber}" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Тип обложки</label>
+                                    <select name="coverType" class="form-select" required>
+                                        <option value="" disabled hidden>Выберите тип обложки</option>
+                                        <option value="Твёрдый переплёт" th:selected="${book.coverType == 'Твёрдый переплёт'}">Твёрдый переплёт</option>
+                                        <option value="Мягкий переплёт" th:selected="${book.coverType == 'Мягкий переплёт'}">Мягкий переплёт</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Возрастное ограничение</label>
+                                    <select name="ageLimit" class="form-select" required>
+                                        <option value="" disabled hidden>Выберите возрастное ограничение</option>
+                                        <option value="Не задано" th:selected="${book.ageLimit == 'Не задано'}">Не задано</option>
+                                        <option value="6+" th:selected="${book.ageLimit == '6+'}">6+</option>
+                                        <option value="12+" th:selected="${book.ageLimit == '12+'}">12+</option>
+                                        <option value="16+" th:selected="${book.ageLimit == '16+'}">16+</option>
+                                        <option value="18+" th:selected="${book.ageLimit == '18+'}">18+</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Жанры и теги -->
+                <div class="form-group mb-4">
+                    <label class="form-label">Жанры</label>
+                    <select name="genreIds" multiple class="form-select select2-multiple" data-placeholder="Выберите жанры" required>
+                        <option></option>
+                        <option th:each="genre : ${genres}"
+                                th:value="${genre.id}"
+                                th:text="${genre.name}"
+                                th:selected="${selectedGenreIds != null and selectedGenreIds.contains(genre.id)}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Теги</label>
+                    <select name="tagIds" multiple class="form-select select2-multiple" data-placeholder="Выберите теги">
+                        <option></option>
+                        <option th:each="tag : ${tags}"
+                                th:value="${tag.id}"
+                                th:text="${tag.name}"
+                                th:selected="${selectedTagIds != null and selectedTagIds.contains(tag.id)}"></option>
+                    </select>
+                </div>
+
+                <!-- Кнопки сохранения и отмены -->
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            width: '100%',
+            allowClear: true,
+            placeholder: function() {
+                return $(this).data('placeholder');
+            },
+            minimumResultsForSearch: Infinity,
+        });
+        $('.select2-multiple').select2({
+            width: '100%',
+            allowClear: true,
+            placeholder: function() {
+                return $(this).data('placeholder');
+            }
+        });
+    });
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const coverFile = document.querySelector('#coverFile');
+        if (!coverFile.files.length) {
+            event.preventDefault();
+            alert('Пожалуйста, выберите обложку книги');
+        }
+    });
+
+    // Предпросмотр изображения при выборе новой обложки
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('coverPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+</body>
+</html>

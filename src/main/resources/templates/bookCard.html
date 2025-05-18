@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <title th:text="${book.title} + ' | Bookstore'">Book Details | Bookstore</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
@@ -30,7 +31,43 @@
 
     <!-- Информация о книге -->
     <div class="col-md-8">
-      <h2 th:text="${book.title}">Название книги</h2>
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0" th:text="${book.title}">Название книги</h2>
+
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+          <a th:href="@{/managing/editbook/{id}(id=${book.id})}"
+             class="btn btn-outline-primary me-2">
+            <i class="bi bi-pencil"></i> Редактировать
+          </a>
+
+          <button type="button" class="btn btn-outline-danger"
+                  data-bs-toggle="modal" data-bs-target="#deleteBookModal">
+            <i class="bi bi-trash"></i> Удалить
+          </button>
+        </div>
+      </div>
+
+      <!-- Модальное окно подтверждения удаления -->
+      <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteBookModalLabel">Подтверждение удаления</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Вы уверены, что хотите удалить книгу "<span th:text="${book.title}"></span>"?
+              Это действие нельзя отменить.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+              <form th:action="@{/managing/deletebook/{id}(id=${book.id})}" method="post">
+                <button type="submit" class="btn btn-danger">Удалить</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Авторы -->
       <p class="text-muted mb-3">
@@ -133,7 +170,41 @@
       </div>
     </div>
   </div>
+
+  <!-- Похожие книги -->
+  <div class="mt-5" th:if="${not #lists.isEmpty(similarBooks)}">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4>Похожие книги</h4>
+      <a th:href="@{/catalog(genres=${book.genres.![id]},tags=${book.tags.![id]})}"
+         class="text-decoration-none">
+        Смотреть все <i class="fa fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3">
+      <div class="card border-0" style="width: 180px;" th:each="similarBook : ${similarBooks}">
+        <a th:href="@{/books/{id}(id=${similarBook.id})}" style="text-decoration: none; color: inherit;">
+          <img th:src="@{${similarBook.coverImg}}" class="card-img-top" alt="Обложка книги" style="height: 200px; object-fit: contain;">
+          <div class="card-body p-2">
+            <h6 class="mb-1"
+                style="min-height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;"
+                th:text="${similarBook.title}">Название книги</h6>
+            <p class="text-muted small mb-1"
+               style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                        <span th:each="a, iterStat : ${similarBook.authors}">
+                            <span th:text="${a.name}"></span>
+                            <span th:unless="${iterStat.last}">, </span>
+                        </span>
+            </p>
+            <p class="fw-bold mb-2" th:text="${similarBook.price} + ' ₽'">Цена</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

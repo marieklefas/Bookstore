@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +33,8 @@ public class AdminController {
 
 
     @GetMapping("/addauthor")
-    public String showAddAuthorForm() {
+    public String showAddAuthorForm(Model model) {
+        model.addAttribute("repository", authorRepository);
         return "Managing/addAuthor";
     }
 
@@ -43,7 +45,8 @@ public class AdminController {
     }
 
     @GetMapping("/addgenre")
-    public String showAddGenreForm() {
+    public String showAddGenreForm(Model model) {
+        model.addAttribute("repository", genreRepository);
         return "Managing/addGenre";
     }
 
@@ -54,7 +57,8 @@ public class AdminController {
     }
 
     @GetMapping("/addlanguage")
-    public String showAddLanguageForm() {
+    public String showAddLanguageForm(Model model) {
+        model.addAttribute("repository", languageRepository);
         return "Managing/addLanguage";
     }
 
@@ -66,7 +70,8 @@ public class AdminController {
     }
 
     @GetMapping("/addtag")
-    public String showAddTagForm() {
+    public String showAddTagForm(Model model) {
+        model.addAttribute("repository", tagRepository);
         return "Managing/addTag";
     }
 
@@ -78,7 +83,8 @@ public class AdminController {
     }
 
     @GetMapping("/addpublisher")
-    public String showAddPublisherForm() {
+    public String showAddPublisherForm(Model model) {
+        model.addAttribute("repository", publisherRepository);
         return "Managing/addPublisher";
     }
 
@@ -91,7 +97,8 @@ public class AdminController {
 
 
     @GetMapping("/addpromocode")
-    public String showAddPromoCodeForm() {
+    public String showAddPromoCodeForm(Model model) {
+        model.addAttribute("promoCodeRepository", promoCodeRepository);
         return "Managing/addPromoCode";
     }
 
@@ -132,39 +139,53 @@ public class AdminController {
         return "redirect:/managing/addpromocode";
     }
 
-
     @GetMapping("/addbook")
     public String showAddBookForm(Model model) {
         model.addAttribute("book", new Book());
-
         model.addAttribute("authors", authorRepository.findAll());
         model.addAttribute("genres", genreRepository.findAll());
         model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("languages", languageRepository.findAll());
         model.addAttribute("publishers", publisherRepository.findAll());
-        model.addAttribute("coverTypes");
-        model.addAttribute("ageLimits");
-        return "Managing/addBook";
+        return "Managing/book_add";
     }
 
     @PostMapping("/addbook")
     public String addBook(@ModelAttribute Book book,
-                          @RequestParam("coverFile") MultipartFile coverFile,
+                          @RequestParam(value = "coverFile", required = true) MultipartFile coverFile,
                           @RequestParam("authorIds") List<Long> authorIds,
                           @RequestParam("genreIds") List<Long> genreIds,
-                          @RequestParam("tagIds") List<Long> tagIds,
+                          @RequestParam(value = "tagIds", required = false) List<Long> tagIds,
                           @RequestParam("languageId") Long languageId,
-                          @RequestParam("publisherId") Long publisherId) throws IOException {
+                          @RequestParam("publisherId") Long publisherId,
+                          Model model) throws IOException {
 
-        if (!coverFile.isEmpty()) {
-            String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
-            String filename = UUID.randomUUID() + "_" + originalFilename;
-            Path uploadPath = Paths.get("uploads/images/");
-            Files.createDirectories(uploadPath);
-            Path filePath = uploadPath.resolve(filename);
-            Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            book.setCoverImg("/images/" + filename);
+        if (coverFile == null || coverFile.isEmpty()) {
+            model.addAttribute("error", "Обложка книги обязательна для загрузки");
+            // Repopulate form fields to preserve user input
+            model.addAttribute("book", book);
+            model.addAttribute("authors", authorRepository.findAll());
+            model.addAttribute("genres", genreRepository.findAll());
+            model.addAttribute("tags", tagRepository.findAll());
+            model.addAttribute("languages", languageRepository.findAll());
+            model.addAttribute("publishers", publisherRepository.findAll());
+
+            model.addAttribute("selectedAuthorIds", authorIds);
+            model.addAttribute("selectedGenreIds", genreIds);
+            model.addAttribute("selectedTagIds", tagIds != null ? tagIds : new ArrayList<Long>());
+            model.addAttribute("selectedLanguageId", languageId);
+            model.addAttribute("selectedPublisherId", publisherId);
+            return "Managing/book_add";
         }
+
+        String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
+        String filename = UUID.randomUUID() + "_" + originalFilename;
+        Path uploadPath = Paths.get("uploads/images/");
+        Files.createDirectories(uploadPath);
+        Path filePath = uploadPath.resolve(filename);
+        Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        book.setCoverImg("/images/" + filename);
+
 
         List<Author> authors = authorRepository.findAllById(authorIds);
         book.setAuthors(authors);
@@ -172,7 +193,9 @@ public class AdminController {
         List<Genre> genres = genreRepository.findAllById(genreIds);
         book.setGenres(genres);
 
-        List<Tag> tags = tagRepository.findAllById(tagIds);
+        List<Tag> tags = (tagIds != null && !tagIds.isEmpty())
+                ? tagRepository.findAllById(tagIds)
+                : new ArrayList<>();
         book.setTags(tags);
 
         languageRepository.findById(languageId).ifPresent(book::setLanguage);
@@ -182,10 +205,75 @@ public class AdminController {
         return "redirect:/managing/addbook";
     }
 
-    @GetMapping("/editbooks")
-    public String getAllBooks(Model model) {
-        List<Book> books = bookRepository.findAll();
-        model.addAttribute("books", books);
-        return "Managing/editBooks";
+    @GetMapping("/editbook/{id}")
+    public String showEditBookForm(@PathVariable Long id, Model model) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
+
+        model.addAttribute("book", book);
+        model.addAttribute("authors", authorRepository.findAll());
+        model.addAttribute("genres", genreRepository.findAll());
+        model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute("languages", languageRepository.findAll());
+        model.addAttribute("publishers", publisherRepository.findAll());
+
+        return "Managing/editBook";
+    }
+
+    @PostMapping("/editbook/{id}")
+    public String editBook(@PathVariable Long id,
+                           @ModelAttribute Book book,
+                           @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
+                           @RequestParam("authorIds") List<Long> authorIds,
+                           @RequestParam("genreIds") List<Long> genreIds,
+                           @RequestParam("tagIds") List<Long> tagIds,
+                           @RequestParam("languageId") Long languageId,
+                           @RequestParam("publisherId") Long publisherId) throws IOException {
+
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
+
+        // Обновляем поля книги
+        existingBook.setTitle(book.getTitle());
+        existingBook.setCoverType(book.getCoverType());
+        existingBook.setPublishingYear(book.getPublishingYear());
+        existingBook.setAgeLimit(book.getAgeLimit());
+        existingBook.setPageNumber(book.getPageNumber());
+        existingBook.setAvailableAmount(book.getAvailableAmount());
+        existingBook.setPrice(book.getPrice());
+        existingBook.setDescription(book.getDescription());
+
+        // Обновляем обложку, если загружена новая
+        if (coverFile != null && !coverFile.isEmpty()) {
+            String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
+            String filename = UUID.randomUUID() + "_" + originalFilename;
+            Path uploadPath = Paths.get("uploads/images/");
+            Files.createDirectories(uploadPath);
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            existingBook.setCoverImg("/images/" + filename);
+        }
+
+        // Обновляем связанные сущности
+        List<Author> authors = authorRepository.findAllById(authorIds);
+        existingBook.setAuthors(authors);
+
+        List<Genre> genres = genreRepository.findAllById(genreIds);
+        existingBook.setGenres(genres);
+
+        List<Tag> tags = tagRepository.findAllById(tagIds);
+        existingBook.setTags(tags);
+
+        languageRepository.findById(languageId).ifPresent(existingBook::setLanguage);
+        publisherRepository.findById(publisherId).ifPresent(existingBook::setPublisher);
+
+        bookRepository.save(existingBook);
+        return "redirect:/books/" + id;
+    }
+
+    @PostMapping("/deletebook/{id}")
+    public String deleteBook(@PathVariable Long id) {
+        bookRepository.deleteById(id);
+        return "redirect:/home";
     }
 }

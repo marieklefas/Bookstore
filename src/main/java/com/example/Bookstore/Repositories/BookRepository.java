@@ -1,5 +1,6 @@
 package com.example.Bookstore.Repositories;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.Bookstore.DataBases.Book;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -34,4 +35,17 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
             "LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(a.name) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Book> findBySearchQuery(@Param("query") String query);
+
+    @Query("SELECT b FROM Book b " +
+            "LEFT JOIN b.genres g " +
+            "LEFT JOIN b.tags t " +
+            "WHERE b.id <> :bookId AND " +
+            "(g.id IN :genreIds OR t.id IN :tagIds) " +
+            "ORDER BY " +
+            "CASE WHEN g.id IN :genreIds THEN 0 ELSE 1 END, " + // Сначала книги с совпадающими жанрами
+            "b.title ASC") // Затем сортируем по названию
+    List<Book> findSimilarBooks(
+            @Param("bookId") Long bookId,
+            @Param("genreIds") List<Long> genreIds,
+            @Param("tagIds") List<Long> tagIds);
 }

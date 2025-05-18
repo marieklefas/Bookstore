@@ -18,7 +18,7 @@ public class SecurityConfig {
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/", "/home", "/books/**", "/search/**", "/catalog/**", "/login", "/register", "/location", "/stores", "/deliveryAndPaymentInfo", "/aboutAuthor").permitAll()
                         .requestMatchers("/profile/**", "/cart/**").authenticated()
-                        .requestMatchers("/managingBooks/**").hasRole("ADMIN")
+                        .requestMatchers("/managing/**").hasRole("ADMIN")
                         .requestMatchers("/my_history").hasRole("USER")
                         .anyRequest().authenticated()
                 )

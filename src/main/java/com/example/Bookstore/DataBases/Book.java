@@ -41,7 +41,7 @@ public class Book {
     @Column(name= "description", columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    @Column(name = "cover_img")
+    @Column(name = "cover_img", nullable = false)
     private String coverImg;
 
     @ManyToMany
