@@ -147,7 +147,7 @@ public class AdminController {
         model.addAttribute("tags", tagRepository.findAll());
         model.addAttribute("languages", languageRepository.findAll());
         model.addAttribute("publishers", publisherRepository.findAll());
-        return "Managing/book_add";
+        return "Managing/addBook";
     }
 
     @PostMapping("/addbook")
@@ -175,7 +175,7 @@ public class AdminController {
             model.addAttribute("selectedTagIds", tagIds != null ? tagIds : new ArrayList<Long>());
             model.addAttribute("selectedLanguageId", languageId);
             model.addAttribute("selectedPublisherId", publisherId);
-            return "Managing/book_add";
+            return "addBook";
         }
 
         String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");

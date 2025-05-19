@@ -1,6 +1,5 @@
-<!-- fragments/sidebar.html -->
 <div th:fragment="sidebar(activePage)">
-    <div class="d-flex flex-column p-3 bg-light border-end" style="width: 250px; min-height: 100vh;">
+    <div class="d-flex flex-column p-3" style="width: 250px; min-height: 100vh; background-color: #FFF4E2;">
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
                 <a th:href="@{/profile}" th:classappend="${activePage} == 'profile' ? 'active bg-primary text-white' : 'text-dark'" class="nav-link">

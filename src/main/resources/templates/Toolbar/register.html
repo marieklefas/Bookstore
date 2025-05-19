@@ -8,50 +8,69 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #FFF4E2;">
 <div th:insert="~{Fragments/toolbar :: toolbar}"></div>
 
-<div class="container mt-5">
+<div class="container min-vh-80 d-flex flex-column justify-content-center mb-5 mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <h2 class="text-center mb-4">Регистрация</h2>
 
-            <form th:action="@{/register}" th:object="${user}" method="post">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}" placeholder="Имя" required>
-                </div>
+            <div class="card p-4 border-0 shadow-sm" style="background-color: #FFF4E2;">
+                <form th:action="@{/register}" th:object="${user}" method="post">
+                    <!-- Первый ряд: Основные данные -->
+                    <div class="mb-4">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="firstName" class="form-label">Имя</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" th:field="*{firstName}" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="lastName" class="form-label">Фамилия</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" th:field="*{lastName}" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="birthDate" class="form-label">Дата рождения</label>
+                                <input type="date" class="form-control" id="birthDate" name="birthDate" th:field="*{birthDate}" required>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="lastName" name="lastName" th:field="*{lastName}" placeholder="Фамилия" required>
-                </div>
+                    <!-- Второй ряд: Контактные данные -->
+                    <div class="mb-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Электронная почта</label>
+                                <input type="email" class="form-control" id="email" name="email" th:field="*{email}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Логин</label>
+                                <input type="text" class="form-control" id="username" name="username" th:field="*{username}" required>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="mb-3">
-                    <input type="date" class="form-control" id="birthDate" name="birthDate" th:field="*{birthDate}" placeholder="Дата рождения" required>
-                </div>
+                    <!-- Третий ряд: Пароли -->
+                    <div class="mb-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="password" name="password" th:field="*{password}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmPassword" class="form-label">Повторите пароль</label>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="mb-3">
-                    <input type="email" class="form-control" id="email" name="email" th:field="*{email}" placeholder="Электронная почта">
-                </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success px-4 py-2">Зарегистрироваться</button>
+                    </div>
+                </form>
 
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="username" name="username" th:field="*{username}" placeholder="Логин" required>
-                </div>
-
-                <div class="mb-3">
-                    <input type="password" class="form-control" id="password" name="password" th:field="*{password}" placeholder="Пароль" required>
-                </div>
-
-                <div class="mb-3">
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Повторите пароль" required>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success">Зарегистрироваться</button>
-                </div>
-            </form>
-
-            <p th:if="${error}" class="text-danger text-center mt-3" th:text="${error}" style="color: red;"></p>
-
+                <p th:if="${error}" class="text-danger text-center mt-3" th:text="${error}"></p>
+            </div>
         </div>
     </div>
 </div>
