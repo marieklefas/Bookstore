@@ -10,8 +10,7 @@
 </head>
 <body>
 <div th:fragment="toolbar">
-
-    <div class="top-bar py-1 px-3 border-bottom d-flex justify-content-between align-items-center small text-muted" style="background-color: #FFEFD7;">
+    <div class="top-bar py-1 px-3 d-flex justify-content-between align-items-center small text-muted" style="background-color: #FFEFD7;">
         <div>
             <a th:href="@{/location}" class="me-3 text-decoration-none text-muted">Москва</a>
             <a th:href="@{/stores}" class="me-3 text-decoration-none text-muted">Магазины</a>
@@ -27,6 +26,8 @@
         </div>
     </div>
 
+    <hr style="border: none; height: 1px; background-color: #CA8B48; margin: 0;">
+
     <nav class="main-bar sticky-top shadow-sm py-2 px-3 border-bottom" style="background-color: #FFEFD7;">
         <div class="container-fluid d-flex align-items-center">
 
@@ -35,7 +36,17 @@
                 <span class="fw-bold fs-5 text-dark">J'aime lire</span>
             </a>
 
-            <a th:href="@{/catalog}" class="btn btn-link text-dark me-3">Каталог</a>
+            <a th:href="@{/catalog}"
+               class="btn text-dark me-3"
+               style="margin-left: 20px;
+                      background-color: transparent;
+                      padding: 6px 12px;
+                      text-decoration: none !important;
+                      transition: background-color 0.2s ease;"
+               onmouseover="this.style.backgroundColor='#E7C39C'"
+               onmouseout="this.style.backgroundColor='transparent'">
+                Каталог
+            </a>
 
             <form th:action="@{/search}" method="get" class="flex-grow-1 me-3">
                 <div class="input-group">
@@ -43,7 +54,7 @@
                            name="q"
                            th:value="${searchQuery != null} ? ${searchQuery} : ''"
                            class="form-control"
-                           style="background-color: #FFEFD7;"
+                           style="background-color: #FFEFD7; border-color: #E7C39C"
                            placeholder="Поиск книг и авторов..."
                            list="searchResults">
                     <datalist id="searchResults">
@@ -51,8 +62,8 @@
                                 th:value="${result}"></option>
                     </datalist>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search"></i>
+                    <button type="submit" class="btn" style="background-color: #E7C39C">
+                        <i class="fas fa-search" style="color: #4C1C04"></i>
                     </button>
                 </div>
             </form>
@@ -61,14 +72,14 @@
             <div class="d-flex align-items-center text-center" style="gap: 1rem;">
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
-                        <i class="fa-regular fa-user" style="color: #ff6600;"></i><br>
+                        <i class="fa-solid fa-user fa-lg" style="color: #4C1C04"></i><br>
                         <span class="small">Вход</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/profile}" class="text-decoration-none text-dark">
-                        <i class="fa-regular fa-user" style="color: #ff6600;"></i><br>
+                        <i class="fa-solid fa-user fa-lg" style="color: #4C1C04"></i><br>
                         <span class="small" th:text="${firstName}">Профиль</span>
                     </a>
                 </div>
@@ -76,14 +87,14 @@
 
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
-                        <i class="fas fa-box fa-lg"></i><br>
+                        <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
                         <span class="small">Заказы</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/profile/orders}" class="text-decoration-none text-dark">
-                        <i class="fas fa-box fa-lg"></i><br>
+                        <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
                         <span class="small">Заказы</span>
                     </a>
                 </div>
@@ -91,14 +102,14 @@
 
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
-                        <i class="fas fa-heart fa-lg"></i><br>
+                        <i class="fas fa-heart fa-lg" style="color: #B20000"></i><br>
                         <span class="small">Избранное</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/profile/favorites}" class="text-decoration-none text-dark">
-                        <i class="fas fa-heart fa-lg"></i><br>
+                        <i class="fas fa-heart fa-lg" style="color: #B20000"></i><br>
                         <span class="small">Избранное</span>
                     </a>
                 </div>
@@ -106,14 +117,14 @@
 
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
-                        <i class="fas fa-shopping-cart fa-lg"></i><br>
+                        <i class="fas fa-shopping-cart fa-lg" style="color: #4C1C04"></i><br>
                         <span class="small">Корзина</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/cart}" class="text-decoration-none text-dark">
-                        <i class="fas fa-shopping-cart fa-lg"></i><br>
+                        <i class="fas fa-shopping-cart fa-lg" style="color: #4C1C04"></i><br>
                         <span class="small">Корзина</span>
                     </a>
                 </div>
@@ -121,7 +132,6 @@
 
         </div>
     </nav>
-    <hr th:fragment="toolbar" class="my-0">
 </div>
 </body>
 </html>

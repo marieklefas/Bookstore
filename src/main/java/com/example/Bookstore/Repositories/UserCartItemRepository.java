@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserCartItemRepository extends JpaRepository<UserCartItem, Long> {
-    Optional<UserCartItem> findByUserAndBook(User user, Book book);
-    List<UserCartItem> findByUser(User user);
+    Optional<UserCartItem> findByUserAndBookOrderByBookAsc(User user, Book book);
+    List<UserCartItem> findByUserOrderByBookAsc(User user);
     void deleteByUserAndBook(User user, Book book);
     void deleteAllByUser(User user);
 }

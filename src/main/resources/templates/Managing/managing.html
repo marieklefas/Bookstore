@@ -4,98 +4,134 @@
       lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Home</title>
+  <title>Управление библиотекой</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link href="/css/toolbar.css" rel="stylesheet">
+  <style>
+    .action-card {
+      transition: transform 0.2s;
+      border-radius: 0.375rem;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      background-color: #FFF4E2;
+      height: 100%;
+      padding: 1.5rem;
+    }
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .action-icon {
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+    .action-title {
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #333;
+      border-bottom: 1px solid #E7C39C;
+      padding-bottom: 10px;
+    }
+  </style>
 </head>
 <body style="background-color: #FFF4E2;">
 <div th:insert="~{Fragments/toolbar :: toolbar}"></div>
 
 <div th:with="baseUrl='/managing'" class="container mt-5">
-  <h2 class="mb-4">Управление библиотекой</h2>
+  <h1 class="section-title">Управление книжным магазином</h1>
 
-  <div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Добавить автора</h5>
-          <p class="card-text">Создайте нового автора для использования при добавлении книг.</p>
-          <a th:href="@{${baseUrl + '/addauthor'}}" class="btn btn-primary w-100">Перейти</a>
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addauthor'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-user-edit action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление авторами</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Добавить жанр</h5>
-          <p class="card-text">Создайте новый жанр для использования при добавлении книг.</p>
-          <a th:href="@{${baseUrl + '/addgenre'}}" class="btn btn-success w-100">Перейти</a>
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addgenre'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-tags action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление жанрами</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Добавить язык</h5>
-          <p class="card-text">Создайте новый язык для использования при добавлении книг.</p>
-          <a th:href="@{${baseUrl + '/addlanguage'}}" class="btn btn-success w-100">Перейти</a>
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addlanguage'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-language action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление языками</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Добавить тег</h5>
-          <p class="card-text">Создайте новый тег для использования при добавлении книг.</p>
-          <a th:href="@{${baseUrl + '/addtag'}}" class="btn btn-success w-100">Перейти</a>
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addtag'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-tag action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление тегами</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Добавить издательство</h5>
-          <p class="card-text">Создайте новое издательство для использования при добавлении книг.</p>
-          <a th:href="@{${baseUrl + '/addpublisher'}}" class="btn btn-success w-100">Перейти</a>
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addpublisher'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-print action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление издательствами</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Добавить промокод</h5>
-          <p class="card-text">Создайте новый промокод для использования при оформлении заказа.</p>
-          <a th:href="@{${baseUrl + '/addpromocode'}}" class="btn btn-success w-100">Перейти</a>
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addpromocode'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-percent action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление промокодами</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Добавить книгу</h5>
-          <p class="card-text">Добавьте новую книгу.</p>
-          <a th:href="@{${baseUrl + '/addbook'}}" class="btn btn-info w-100 text-white">Перейти</a>
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addbook'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-book action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Добавить книгу</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
 
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-        <div class="card-body text-center">
-          <h5 class="card-title">Статистика</h5>
-          <p class="card-text">Статистика по магазину</p>
-          <a th:href="@{${baseUrl + '/statistics'}}" class="btn btn-info w-100 text-white">Перейти</a>
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/statistics'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-chart-bar action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Посмотреть статистику</h5>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
-
   </div>
 </div>
 </body>

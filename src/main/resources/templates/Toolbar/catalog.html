@@ -18,16 +18,44 @@
         .selected-filters {
             margin-bottom: 20px;
         }
-        .filter-badge {
-            margin-right: 5px;
-            margin-bottom: 5px;
+        .custom-btn {
+            background-color: #FFF4E2;
+            border: 1px solid #E7C39C;
+            color: #4C1C04;
+            transition: background-color 0.2s ease;
         }
-        .book-card {
-            margin-bottom: 20px;
-            height: 100%;
+        .custom-btn:hover {
+            background-color: #E7C39C;
         }
-        .slider-container {
-            padding: 0 15px;
+        .dec-btn {
+            border: none !important;
+            border-right: 1px solid #D4C4A8 !important;
+            border-radius: 0 !important;
+        }
+        .dec-btn:hover {
+            background-color: #E7C39C !important;
+        }
+        .inc-btn {
+            border: none !important;
+            border-left: 1px solid #D4C4A8 !important;
+            border-radius: 0 !important;
+        }
+        .inc-btn:hover {
+            background-color: #E7C39C !important;
+        }
+        .favorite-btn {
+            border: 1px solid #FFEFD7 !important;
+            color: #B20000 !important;
+        }
+        .favorite-btn:hover {
+            background-color: #E79C9C !important;
+        }
+        .reset-btn {
+            border: 1px solid #D5CDC5 !important;
+            color: #797876 !important;
+        }
+        .reset-btn:hover {
+            background-color: #D5CDC5 !important;
         }
     </style>
 </head>
@@ -44,7 +72,7 @@
     <div class="row mt-4">
         <div class="col-md-3">
             <div class="selected-filters">
-                <button class="btn btn-sm btn-outline-danger" onclick="resetAllFilters()">Сбросить все фильтры</button>
+                <button class="btn custom-btn reset-btn" onclick="resetAllFilters()">Сбросить все фильтры</button>
             </div>
             <!-- Фильтры -->
             <div class="filter-section">
@@ -187,29 +215,50 @@
                                       method="post"
                                       class="me-2 add-to-cart-form">
                                     <button th:if="${book.cartItems.?[user.username == #authentication.name].size() == 0}"
-                                            type="submit" class="btn btn-outline-primary">
-                                        Купить</button>
+                                            type="submit"
+                                            class="btn custom-btn"
+                                            style="width: 120px; height: 38px;">
+                                        Купить
+                                    </button>
                                 </form>
 
                                 <!-- Если книга уже в корзине, показываем интерфейс - количество + -->
                                 <div th:if="${#authorization.expression('isAuthenticated()') and book.cartItems.?[user.username == #authentication.name].size() > 0}"
                                      class="input-group me-2" style="width: 120px;">
-                                    <form th:action="@{/cart/cart-decrease/{id}(id=${book.id})}"
-                                          method="post"
-                                          class="decrease-cart-form">
-                                        <button class="btn btn-outline-secondary" type="submit">-</button>
-                                    </form>
-                                    <input type="text" class="form-control text-center" th:value="${book.getUserCartCount(#authentication.name)}" readonly>
-                                    <form th:action="@{/cart/cart-increase/{id}(id=${book.id})}"
-                                          method="post"
-                                          class="increase-cart-form">
-                                        <button class="btn btn-outline-secondary" type="submit">+</button>
-                                    </form>
+                                    <div class="d-flex border rounded" style="border-color: #E7C39C !important;">
+                                        <form th:action="@{/cart/cart-decrease/{id}(id=${book.id})}"
+                                              method="post"
+                                              class="decrease-cart-form flex-grow-1">
+                                            <button class="btn dec-btn"
+                                                    type="submit">
+                                                <i class="fa-solid fa-minus" style="color: #4C1C04; opacity: 0.9;"></i>
+                                            </button>
+                                        </form>
+
+                                        <input type="text"
+                                               class="form-control text-center border-0"
+                                               style="background-color: #FFF4E2; color: #4C1C04;"
+                                               th:value="${book.getUserCartCount(#authentication.name)}"
+                                               readonly>
+
+                                        <form th:action="@{/cart/cart-increase/{id}(id=${book.id})}"
+                                              method="post"
+                                              class="increase-cart-form flex-grow-1">
+                                            <button class="btn inc-btn"
+                                                    type="submit">
+                                                <i class="fa-solid fa-plus" style="color: #4C1C04; opacity: 0.9;"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
 
                                 <!-- Если неавторизован — кнопка ведет на login -->
                                 <form th:if="${!#authorization.expression('isAuthenticated()')}" onsubmit="window.location.href='/login'; return false;" class="me-2">
-                                    <button type="submit" class="btn btn-outline-primary">Купить</button>
+                                    <button type="submit"
+                                            class="btn custom-btn"
+                                            style="width: 120px; height: 38px;">
+                                        Купить
+                                    </button>
                                 </form>
                             </div>
 
@@ -219,14 +268,14 @@
                                       th:action="@{/profile/toggle-favorite/{id}(id=${book.id})}"
                                       method="post"
                                       class="toggle-favorite-form">
-                                    <button type="submit" class="btn btn-outline-danger">
+                                    <button type="submit" class="btn custom-btn favorite-btn">
                                         <i class="fa"
                                            th:class="${book.userFavorites.?[username == #authentication?.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'">
                                         </i>
                                     </button>
                                 </form>
                                 <form th:if="${!#authorization.expression('isAuthenticated()')}" onsubmit="window.location.href='/login'; return false;" class="me-2">
-                                    <button type="submit" class="btn btn-outline-danger">
+                                    <button type="submit" class="btn custom-btn favorite-btn">
                                         <i class="fa"
                                            th:class="${book.userFavorites.?[username == #authentication?.name].size() > 0} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'">
                                         </i>

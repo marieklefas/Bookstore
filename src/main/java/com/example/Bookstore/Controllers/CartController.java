@@ -38,7 +38,7 @@ public class CartController {
         if (principal == null) return "redirect:/login";
 
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
-        List<UserCartItem> cartItems = userCartItemRepository.findByUser(user);
+        List<UserCartItem> cartItems = userCartItemRepository.findByUserOrderByBookAsc(user);
 
         int  totalPrice = (int) Math.round(cartItems.stream()
                 .mapToDouble(item -> item.getBook().getPrice() * item.getQuantity())
@@ -77,7 +77,7 @@ public class CartController {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Book book = bookRepository.findById(bookId).orElseThrow();
 
-        UserCartItem item = userCartItemRepository.findByUserAndBook(user, book)
+        UserCartItem item = userCartItemRepository.findByUserAndBookOrderByBookAsc(user, book)
                 .orElse(new UserCartItem(user, book, 0));
 
         if (item.getQuantity() < book.getAvailableAmount()) {
@@ -101,7 +101,7 @@ public class CartController {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Book book = bookRepository.findById(bookId).orElseThrow();
 
-        userCartItemRepository.findByUserAndBook(user, book).ifPresent(item -> {
+        userCartItemRepository.findByUserAndBookOrderByBookAsc(user, book).ifPresent(item -> {
             if (item.getQuantity() > 1) {
                 item.setQuantity(item.getQuantity() - 1);
                 userCartItemRepository.save(item);
@@ -137,9 +137,6 @@ public class CartController {
 
     @PostMapping("/apply-promocode")
     public String applyPromocode(@RequestParam String promoCode, Model model, Principal principal) {
-        User user = userRepository.findByUsername(principal.getName()).orElseThrow();
-        List<UserCartItem> cartItems = userCartItemRepository.findByUser(user);
-
         String promoStatus;
         Optional<PromoCode> promo = promoCodeRepository.findByCodeIgnoreCase(promoCode.trim());
 

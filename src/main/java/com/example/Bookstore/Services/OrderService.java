@@ -35,7 +35,7 @@ public class OrderService {
     }
 
     public void createOrderFromCart(User user, PromoCode promoCode) {
-        List<UserCartItem> cartItems  = userCartItemRepository.findByUser(user);
+        List<UserCartItem> cartItems  = userCartItemRepository.findByUserOrderByBookAsc(user);
         if (cartItems.isEmpty()) return;
 
         double totalPrice = cartItems.stream()
