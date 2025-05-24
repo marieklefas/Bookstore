@@ -9,6 +9,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 1px solid #E7C39C;
+            padding-bottom: 10px;
+        }
+
         .stat-card {
             transition: transform 0.2s;
             border-radius: 0.375rem;
@@ -36,12 +44,12 @@
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
             margin-top: 20px;
         }
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: #333;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
+        .back-btn {
+            border: 1px solid #FFEFD7 !important;
+            color: #797876 !important;
+        }
+        .back-btn:hover {
+            background-color: #D5CDC5 !important;
         }
     </style>
 </head>
@@ -51,8 +59,14 @@
 <div class="d-flex">
     <!-- Основной контент -->
     <div class="flex-grow-1 p-4">
+        <div class="mb-4">
+            <a th:href="@{/managing}" class="btn back-btn">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Статистика магазина</h1>
+            <h1 class="h3 mb-0 section-title">Статистика магазина</h1>
         </div>
 
         <!-- Основные показатели -->
@@ -60,8 +74,8 @@
             <div class="col-md-4 mb-3">
                 <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
                     <div class="d-flex align-items-center">
-                        <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="fas fa-book text-primary fa-2x"></i>
+                        <div class="bg-opacity-10 p-3 rounded me-3">
+                            <i class="fas fa-book fa-2x" style="color: #4C1C04"></i>
                         </div>
                         <div>
                             <h5 class="mb-0">Всего продано книг</h5>
@@ -74,8 +88,8 @@
             <div class="col-md-4 mb-3">
                 <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
                     <div class="d-flex align-items-center">
-                        <div class="bg-success bg-opacity-10 p-3 rounded me-3">
-                            <i class="fas fa-ruble-sign text-success fa-2x"></i>
+                        <div class="bg-opacity-10 p-3 rounded me-3">
+                            <i class="fas fa-ruble-sign fa-2x" style="color: #4C1C04"></i>
                         </div>
                         <div>
                             <h5 class="mb-0">Общий доход</h5>
@@ -88,8 +102,8 @@
             <div class="col-md-4 mb-3">
                 <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
                     <div class="d-flex align-items-center">
-                        <div class="bg-warning bg-opacity-10 p-3 rounded me-3">
-                            <i class="fas fa-users text-warning fa-2x"></i>
+                        <div class="bg-opacity-10 p-3 rounded me-3">
+                            <i class="fas fa-users fa-2x" style="color: #4C1C04"></i>
                         </div>
                         <div>
                             <h5 class="mb-0">Активных клиентов</h5>
@@ -108,7 +122,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                         <div class="card-body">
                             <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-chart-line text-primary me-2"></i>Топ продаж
+                                <i class="fas fa-chart-line me-2" style="color: #4C1C04"></i>Топ продаж
                             </h5>
                             <div class="chart-container">
                                 <canvas id="topBooksChart"></canvas>
@@ -122,7 +136,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                         <div class="card-body">
                             <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-bookmark text-success me-2"></i>Продажи по жанрам
+                                <i class="fas fa-bookmark me-2" style="color: #4C1C04"></i>Продажи по жанрам
                             </h5>
                             <div class="chart-container">
                                 <canvas id="genresChart"></canvas>
@@ -136,7 +150,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                         <div class="card-body">
                             <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-user-edit text-info me-2"></i>Продажи по авторам
+                                <i class="fas fa-user-edit me-2" style="color: #4C1C04"></i>Продажи по авторам
                             </h5>
                             <div class="chart-container">
                                 <canvas id="authorsChart"></canvas>
@@ -155,7 +169,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                         <div class="card-body">
                             <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-calendar-alt text-warning me-2"></i>Динамика продаж
+                                <i class="fas fa-calendar-alt me-2" style="color: #4C1C04"></i>Динамика продаж
                             </h5>
                             <div class="chart-container" style="height: 300px;">
                                 <canvas id="salesTrendChart"></canvas>
@@ -169,7 +183,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                         <div class="card-body">
                             <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-tag text-danger me-2"></i>Использование промокодов
+                                <i class="fas fa-tag me-2" style="color: #4C1C04"></i>Использование промокодов
                             </h5>
                             <div class="chart-container" style="height: 300px;">
                                 <canvas id="promoCodesChart"></canvas>

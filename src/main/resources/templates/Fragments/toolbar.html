@@ -33,14 +33,15 @@
 
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img th:src="@{/images/logo.png}" alt="Логотип" class="me-2" style="height: 80px;">
-                <span class="fw-bold fs-5 text-dark">J'aime lire</span>
+                <span class="fw-bold fs-5" style="color: #4C1C04">J'aime lire</span>
             </a>
 
             <a th:href="@{/catalog}"
-               class="btn text-dark me-3"
+               class="btn me-3"
                style="margin-left: 20px;
                       background-color: transparent;
                       padding: 6px 12px;
+                      color: #4C1C04;
                       text-decoration: none !important;
                       transition: background-color 0.2s ease;"
                onmouseover="this.style.backgroundColor='#E7C39C'"
@@ -54,7 +55,7 @@
                            name="q"
                            th:value="${searchQuery != null} ? ${searchQuery} : ''"
                            class="form-control"
-                           style="background-color: #FFEFD7; border-color: #E7C39C"
+                           style="background-color: #FFF4E2; border-color: #E7C39C"
                            placeholder="Поиск книг и авторов..."
                            list="searchResults">
                     <datalist id="searchResults">
@@ -73,14 +74,14 @@
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fa-solid fa-user fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small">Вход</span>
+                        <span class="small" style="color: #4C1C04">Вход</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/profile}" class="text-decoration-none text-dark">
                         <i class="fa-solid fa-user fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small" th:text="${firstName}">Профиль</span>
+                        <span class="small" style="color: #4C1C04" th:text="${firstName}">Профиль</span>
                     </a>
                 </div>
 
@@ -88,14 +89,14 @@
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small">Заказы</span>
+                        <span class="small" style="color: #4C1C04">Заказы</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/profile/orders}" class="text-decoration-none text-dark">
                         <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small">Заказы</span>
+                        <span class="small" style="color: #4C1C04">Заказы</span>
                     </a>
                 </div>
 
@@ -103,14 +104,14 @@
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fas fa-heart fa-lg" style="color: #B20000"></i><br>
-                        <span class="small">Избранное</span>
+                        <span class="small" style="color: #4C1C04">Избранное</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/profile/favorites}" class="text-decoration-none text-dark">
                         <i class="fas fa-heart fa-lg" style="color: #B20000"></i><br>
-                        <span class="small">Избранное</span>
+                        <span class="small" style="color: #4C1C04">Избранное</span>
                     </a>
                 </div>
 
@@ -118,14 +119,14 @@
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fas fa-shopping-cart fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small">Корзина</span>
+                        <span class="small" style="color: #4C1C04">Корзина</span>
                     </a>
                 </div>
 
                 <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/cart}" class="text-decoration-none text-dark">
                         <i class="fas fa-shopping-cart fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small">Корзина</span>
+                        <span class="small" style="color: #4C1C04">Корзина</span>
                     </a>
                 </div>
             </div>

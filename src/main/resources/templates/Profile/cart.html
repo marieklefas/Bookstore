@@ -8,6 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        .promocode {
+            background-color: #FFF4E2 !important;  /* Цвет фона, как у основного фона */
+            border: 1px solid #E7C39C !important; /* Граница в тон кнопкам */
+            color: #4C1C04 !important;            /* Цвет текста */
+        }
+
         .custom-btn {
             background-color: #FFF4E2;
             border: 1px solid #E7C39C;
@@ -162,7 +168,7 @@
             <div class="card border-0 shadow-sm" style="background-color: #FFF4E2;">
                 <div class="card-body">
                     <form th:action="@{/cart/apply-promocode}" method="post" class="mb-3 d-flex">
-                        <input type="text" name="promoCode" class="form-control me-2"
+                        <input type="text" name="promoCode" class="form-control promocode me-2"
                                placeholder="Введите промокод"
                                th:value="${promoCode}"
                                th:disabled="${#lists.isEmpty(cartItems)}">
@@ -192,7 +198,7 @@
                     </div>
 
                     <form th:action="@{/cart/placeorder}" method="post" class="mt-3">
-                        <button class="btn btn-success w-100" th:disabled="${#lists.isEmpty(cartItems)}">Оформить заказ</button>
+                        <button class="btn custom-btn w-100" th:disabled="${#lists.isEmpty(cartItems)}">Оформить заказ</button>
                     </form>
                 </div>
             </div>

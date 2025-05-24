@@ -10,9 +10,76 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #4C1C04;
+            border-bottom: 1px solid #E7C39C;
+            padding-bottom: 10px;
+        }
+
         .error-message {
             color: red;
             margin-bottom: 10px;
+        }
+
+        .form-group, .card {
+            background-color: #FFF4E2;
+            color: #4C1C04;
+        }
+
+        /* Стили для полей ввода и select */
+        .form-control, .form-select, form-select select2, .select2-container--default .select2-selection--multiple {
+            background-color: #FFF4E2 !important;  /* Цвет фона, как у основного фона */
+            border: 1px solid #E7C39C !important; /* Граница в тон кнопкам */
+            color: #4C1C04 !important;            /* Цвет текста */
+        }
+
+        /* Стили для выбранных элементов в Select2 (теги) */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #E7C39C !important;
+            border: 1px solid #D4A76A !important;
+            color: #4C1C04 !important;
+        }
+
+        /* Стили для крестика удаления тега */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #4C1C04 !important;
+        }
+
+        /* Стиль для выпадающего списка Select2 */
+        .select2-dropdown {
+            background-color: #FFF4E2 !important;
+            border: 1px solid #E7C39C !important;
+        }
+
+        /* Стиль для элементов в выпадающем списке */
+        .select2-results__option {
+            background-color: #FFF4E2 !important;
+            color: #4C1C04 !important;
+        }
+
+        /* Стиль при наведении на элемент в выпадающем списке */
+        .select2-results__option--highlighted {
+            background-color: #E7C39C !important;
+            color: #4C1C04 !important;
+        }
+
+        .save-btn {
+            background-color: #FFF4E2;
+            border: 1px solid #E7C39C;
+            color: #4C1C04;
+            transition: background-color 0.2s ease;
+        }
+        .save-btn:hover {
+            background-color: #E7C39C;
+        }
+        .back-btn {
+            border: 1px solid #FFEFD7 !important;
+            color: #797876 !important;
+        }
+        .back-btn:hover {
+            background-color: #D5CDC5 !important;
         }
     </style>
 </head>
@@ -21,13 +88,15 @@
 
 <div class="container my-5">
     <div class="mb-4">
-        <a th:href="@{/managing}" class="btn btn-secondary">
+        <a th:href="@{/managing}" class="btn back-btn">
             <i class="fas fa-arrow-left"></i> Назад
         </a>
     </div>
 
     <div class="mb-4">
-        <h2 class="d-inline-block ms-3">Добавить книгу</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0 section-title">Добавить книгу</h1>
+        </div>
     </div>
 
     <form th:action="@{/managing/addbook}" method="post" enctype="multipart/form-data">
@@ -38,7 +107,7 @@
                     <img th:src="@{${book.coverImg}}" id="coverPreview" class="img-fluid rounded mb-3" alt="Обложка книги" style="max-height: 500px; object-fit: contain;" required>
                     <div class="form-group">
 <!--                        <label class="form-label">Обложка</label>-->
-                        <input type="file" class="form-control" id="coverFile" name="coverFile" onchange="previewImage(this)">
+                        <input type="file" class="form-control" style="background-color: #FFF4E2" id="coverFile" name="coverFile" onchange="previewImage(this)">
                     </div>
                 </div>
             </div>
@@ -91,8 +160,7 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="form-label">Издательство</label>
-                                    <select name="publisherId" class="form-select select2" data-placeholder="Выберите издательство" required>
-                                        <option></option>
+                                    <select name="publisherId" class="form-select" data-placeholder="Выберите издательство" required>
                                         <option th:each="pub : ${publishers}"
                                                 th:value="${pub.id}"
                                                 th:text="${pub.name}"
@@ -105,8 +173,7 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <label class="form-label">Язык</label>
-                                    <select name="languageId" class="form-select select2" data-placeholder="Выберите язык" required>
-                                        <option></option>
+                                    <select name="languageId" class="form-select" data-placeholder="Выберите язык" required>
                                         <option th:each="lang : ${languages}"
                                                 th:value="${lang.id}"
                                                 th:text="${lang.name}"
@@ -168,7 +235,7 @@
 
                 <!-- Кнопки сохранения и отмены -->
                 <div class="d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="submit" class="btn save-btn">Добавить</button>
                 </div>
             </div>
         </div>

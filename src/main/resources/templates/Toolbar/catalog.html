@@ -8,6 +8,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css">
     <style>
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 1px solid #E7C39C;
+            padding-bottom: 10px;
+        }
+
         .filter-section {
             margin-bottom: 20px;
             padding: 15px;
@@ -57,6 +65,56 @@
         .reset-btn:hover {
             background-color: #D5CDC5 !important;
         }
+
+        /* Стили для полей ввода и select */
+        .form-control, .filter-select .select2-selection, .select2-container--default .select2-selection--multiple {
+            background-color: #FFF4E2 !important;  /* Цвет фона, как у основного фона */
+            border: 1px solid #E7C39C !important; /* Граница в тон кнопкам */
+            color: #4C1C04 !important;            /* Цвет текста */
+        }
+
+        /* Стили для выбранных элементов в Select2 (теги) */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #E7C39C !important;
+            border: 1px solid #D4A76A !important;
+            color: #4C1C04 !important;
+        }
+
+        /* Стили для крестика удаления тега */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #4C1C04 !important;
+        }
+
+        /* Стиль для выпадающего списка Select2 */
+        .select2-dropdown {
+            background-color: #FFF4E2 !important;
+            border: 1px solid #E7C39C !important;
+        }
+
+        /* Стиль для элементов в выпадающем списке */
+        .select2-results__option {
+            background-color: #FFF4E2 !important;
+            color: #4C1C04 !important;
+        }
+
+        /* Стиль при наведении на элемент в выпадающем списке */
+        .select2-results__option--highlighted {
+            background-color: #E7C39C !important;
+            color: #4C1C04 !important;
+        }
+
+        /* Стиль для чекбоксов */
+        .form-check-input {
+            background-color: #FFF4E2;
+            border: 1px solid #E7C39C;
+        }
+
+        /* Стиль для активного чекбокса */
+        .form-check-input:checked {
+            background-color: #E7C39C;
+            border-color: #E7C39C;
+        }
+
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
@@ -64,7 +122,7 @@
 
 <div class="container-fluid">
 
-    <div th:if="${searchQuery != null}" class="alert alert-info mb-3">
+    <div th:if="${searchQuery != null}" class="alert mb-3" style="background-color: #FFE4BA;">
         Результаты поиска для: "<span th:text="${searchQuery}"></span>"
         <a th:href="@{/catalog}" class="float-end">Сбросить поиск</a>
     </div>
@@ -83,7 +141,6 @@
                             th:text="${author.name}"
                             th:selected="${selectedAuthors != null and selectedAuthors.contains(author.id)}"></option>
                 </select>
-                <div id="authors-selected" class="mt-2"></div>
             </div>
 
             <div class="filter-section">
@@ -94,7 +151,6 @@
                             th:text="${genre.name}"
                             th:selected="${selectedGenres != null and selectedGenres.contains(genre.id)}"></option>
                 </select>
-                <div id="genres-selected" class="mt-2"></div>
             </div>
 
             <div class="filter-section">
@@ -105,7 +161,6 @@
                             th:text="${tag.name}"
                             th:selected="${selectedTags != null and selectedTags.contains(tag.id)}"></option>
                 </select>
-                <div id="tags-selected" class="mt-2"></div>
             </div>
 
             <div class="filter-section">
@@ -116,7 +171,6 @@
                             th:text="${language.name}"
                             th:selected="${selectedLanguages != null and selectedLanguages.contains(language.id)}"></option>
                 </select>
-                <div id="languages-selected" class="mt-2"></div>
             </div>
 
             <div class="filter-section">
@@ -127,7 +181,6 @@
                             th:text="${publisher.name}"
                             th:selected="${selectedPublishers != null and selectedPublishers.contains(publisher.id)}"></option>
                 </select>
-                <div id="publishers-selected" class="mt-2"></div>
             </div>
 
             <div class="filter-section">
@@ -184,7 +237,8 @@
         </div>
 
         <div class="col-md-9">
-            <h1>Каталог книг</h1>
+            <h1 class="section-title">Каталог книг</h1>
+<!--            <h1>Каталог книг</h1>-->
 
             <div class="d-flex flex-wrap gap-3">
                 <div class="card border-0" style="width: 180px; background-color: #FFF4E2;" th:each="book : ${books}">
