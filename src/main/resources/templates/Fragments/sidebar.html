@@ -2,32 +2,32 @@
     <div class="d-flex flex-column p-3" style="width: 250px; min-height: 100vh; background-color: #FFF4E2;">
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a th:href="@{/profile}" th:classappend="${activePage} == 'profile' ? 'active bg-custom text-custom' : 'text-dark'" class="nav-link"
-                   th:styleappend="${activePage} == 'profile' ? 'background-color: #E7C39C; color: #4C1C04;' : ''">
+                <a th:href="@{/profile}" th:classappend="${activePage} == 'profile' ? 'active bg-custom text-custom' : 'text-custom'" class="nav-link"
+                   th:styleappend="${activePage} == 'profile' ? 'background-color: #E7C39C; color: #4C1C04;' : 'color: #4C1C04;'">
                     <i class="fas fa-th-large me-2" style="color: #4C1C04"></i> Профиль
                 </a>
             </li>
             <li>
-                <a th:href="@{/profile/personalData}" th:classappend="${activePage} == 'personalData' ? 'active bg-custom text-custom' : 'text-dark'" class="nav-link"
-                   th:styleappend="${activePage} == 'personalData' ? 'background-color: #E7C39C; color: #4C1C04;' : ''">
+                <a th:href="@{/profile/personalData}" th:classappend="${activePage} == 'personalData' ? 'active bg-custom text-custom' : 'text-custom'" class="nav-link"
+                   th:styleappend="${activePage} == 'personalData' ? 'background-color: #E7C39C; color: #4C1C04;' : 'color: #4C1C04;'">
                     <i class="fas fa-user me-2" style="color: #4C1C04"></i> Личные данные
                 </a>
             </li>
             <li>
-                <a th:href="@{/profile/orders}" th:classappend="${activePage} == 'orders' ? 'active bg-custom text-custom' : 'text-dark'" class="nav-link"
-                   th:styleappend="${activePage} == 'orders' ? 'background-color: #E7C39C; color: #4C1C04;' : ''">
-                    <i class="fas fa-box me-2" style="color: #4C1C04"></i> Заказы
-                </a>
-            </li>
-            <li>
-                <a th:href="@{/profile/favorites}" th:classappend="${activePage} == 'favorites' ? 'active bg-custom text-custom' : 'text-dark'" class="nav-link"
-                   th:styleappend="${activePage} == 'favorites' ? 'background-color: #E7C39C; color: #4C1C04;' : ''">
+                <a th:href="@{/profile/favorites}" th:classappend="${activePage} == 'favorites' ? 'active bg-custom text-custom' : 'text-custom'" class="nav-link"
+                   th:styleappend="${activePage} == 'favorites' ? 'background-color: #E7C39C; color: #4C1C04;' : 'color: #4C1C04'">
                     <i class="fas fa-heart fa-lg" style="color: #B20000"></i> Избранное
                 </a>
             </li>
             <li>
-                <a th:href="@{/profile/purchased}" th:classappend="${activePage} == 'purchased' ? 'active bg-custom text-custom' : 'text-dark'" class="nav-link"
-                   th:styleappend="${activePage} == 'purchased' ? 'background-color: #E7C39C; color: #4C1C04;' : ''">
+                <a th:href="@{/profile/orders}" th:classappend="${activePage} == 'orders' ? 'active bg-custom text-custom' : 'text-custom'" class="nav-link"
+                   th:styleappend="${activePage} == 'orders' ? 'background-color: #E7C39C; color: #4C1C04;' : 'color: #4C1C04;'">
+                    <i class="fas fa-box me-2" style="color: #4C1C04"></i> Заказы
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/profile/purchased}" th:classappend="${activePage} == 'purchased' ? 'active bg-custom text-custom' : 'text-custom'" class="nav-link"
+                   th:styleappend="${activePage} == 'purchased' ? 'background-color: #E7C39C; color: #4C1C04;' : 'color: #4C1C04;'">
                     <i class="fas fa-shopping-cart me-2" style="color: #4C1C04"></i> Купленные товары
                 </a>
             </li>

@@ -12,7 +12,7 @@
         .section-title {
             font-size: 1.5rem;
             margin-bottom: 20px;
-            color: #333;
+            color: #4C1C04;
             border-bottom: 1px solid #E7C39C;
             padding-bottom: 10px;
         }
@@ -31,6 +31,9 @@
         .save-btn:hover {
             background-color: #E7C39C;
         }
+        .main-text {
+            color: #4C1C04;
+        }
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
@@ -43,26 +46,25 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h3 mb-0 section-title">Личные данные</h1>
         </div>
-        <p>Страница с личными данными пользователя</p>
 
         <form th:action="@{/profile/personalData}" th:object="${user}" method="post">
 
             <!-- Первая строка -->
             <div class="row mb-3">
                 <div class="col">
-                    <label>Имя</label>
+                    <label class="main-text">Имя</label>
                     <input type="text" th:field="*{firstName}" class="form-control" required>
                     <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
                 </div>
 
                 <div class="col">
-                    <label>Фамилия</label>
+                    <label class="main-text">Фамилия</label>
                     <input type="text" th:field="*{lastName}" class="form-control" required>
                     <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
                 </div>
 
                 <div class="col">
-                    <label>Дата рождения</label>
+                    <label class="main-text">Дата рождения</label>
                     <input type="date" class="form-control" id="birthDate" name="birthDate" th:value="${user.birthDate}" required>
                     <div class="text-danger" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></div>
                 </div>
@@ -71,13 +73,13 @@
             <!-- Вторая строка -->
             <div class="row mb-3">
                 <div class="col">
-                    <label>Логин</label>
+                    <label class="main-text">Логин</label>
                     <input type="text" th:field="*{username}" class="form-control" disabled>
                     <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                 </div>
 
                 <div class="col">
-                    <label>Электронная почта</label>
+                    <label class="main-text">Электронная почта</label>
                     <input type="email" th:field="*{email}" class="form-control" required>
                     <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
@@ -86,20 +88,20 @@
             <!-- Смена пароля -->
             <div class="row mb-3">
                 <div class="col">
-                    <label>Текущий пароль</label>
+                    <label class="main-text">Текущий пароль</label>
                     <input type="password" class="form-control" id="currentPassword" name="currentPassword"
                            th:value="${currentPassword != null} ? ${currentPassword} : ''">
                     <div class="text-danger" th:if="${passwordError}" th:text="${passwordError}"></div>
                 </div>
 
                 <div class="col">
-                    <label>Новый пароль</label>
+                    <label class="main-text">Новый пароль</label>
                     <input type="password" class="form-control" id="newPassword" name="newPassword">
                     <div class="text-danger" th:if="${newPasswordError}" th:text="${newPasswordError}"></div>
                 </div>
 
                 <div class="col">
-                    <label>Повторите пароль</label>
+                    <label class="main-text">Повторите пароль</label>
                     <input type="password" class="form-control" id="repeatPassword" name="repeatPassword">
                     <div class="text-danger" th:if="${repeatPasswordError}" th:text="${repeatPasswordError}"></div>
                 </div>

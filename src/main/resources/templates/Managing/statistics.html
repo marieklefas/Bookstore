@@ -12,7 +12,7 @@
         .section-title {
             font-size: 1.5rem;
             margin-bottom: 20px;
-            color: #333;
+            color: #4C1C04;
             border-bottom: 1px solid #E7C39C;
             padding-bottom: 10px;
         }
@@ -51,142 +51,150 @@
         .back-btn:hover {
             background-color: #D5CDC5 !important;
         }
+        .card-title, .main-text {
+            color: #4C1C04;
+        }
+        .lighter-text {
+            color: #6F5649;
+        }
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
 <div th:insert="~{Fragments/toolbar :: toolbar}"></div>
 
-<div class="d-flex">
-    <!-- Основной контент -->
-    <div class="flex-grow-1 p-4">
-        <div class="mb-4">
-            <a th:href="@{/managing}" class="btn back-btn">
-                <i class="fas fa-arrow-left"></i> Назад
-            </a>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0 section-title">Статистика магазина</h1>
-        </div>
-
-        <!-- Основные показатели -->
-        <div class="row mb-4">
-            <div class="col-md-4 mb-3">
-                <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-opacity-10 p-3 rounded me-3">
-                            <i class="fas fa-book fa-2x" style="color: #4C1C04"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0">Всего продано книг</h5>
-                            <p class="h3 mb-0" th:text="${totalBooksSold}">0</p>
-                        </div>
-                    </div>
-                </div>
+<div class="container mt-4">
+    <div class="d-flex">
+        <!-- Основной контент -->
+        <div class="flex-grow-1 p-4">
+            <div class="mb-4">
+                <a th:href="@{/managing}" class="btn back-btn">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </a>
             </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-opacity-10 p-3 rounded me-3">
-                            <i class="fas fa-ruble-sign fa-2x" style="color: #4C1C04"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0">Общий доход</h5>
-                            <p class="h3 mb-0" th:text="${totalRevenue + '₽'}">0₽</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0 section-title">Статистика магазина</h1>
             </div>
 
-            <div class="col-md-4 mb-3">
-                <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-opacity-10 p-3 rounded me-3">
-                            <i class="fas fa-users fa-2x" style="color: #4C1C04"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0">Активных клиентов</h5>
-                            <p class="h3 mb-0" th:text="${activeCustomers}">0</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Первый ряд диаграмм -->
-        <div class="stats-section mb-4">
-            <div class="row">
-                <!-- Самые популярные книги -->
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-chart-line me-2" style="color: #4C1C04"></i>Топ продаж
-                            </h5>
-                            <div class="chart-container">
-                                <canvas id="topBooksChart"></canvas>
+            <!-- Основные показатели -->
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-opacity-10 p-3 rounded me-3">
+                                <i class="fas fa-book fa-2x" style="color: #4C1C04"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 main-text">Всего продано книг</h5>
+                                <p class="h3 mb-0 main-text" th:text="${totalBooksSold}">0</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Продажи по жанрам -->
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-bookmark me-2" style="color: #4C1C04"></i>Продажи по жанрам
-                            </h5>
-                            <div class="chart-container">
-                                <canvas id="genresChart"></canvas>
+                <div class="col-md-4 mb-3">
+                    <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-opacity-10 p-3 rounded me-3">
+                                <i class="fas fa-ruble-sign fa-2x" style="color: #4C1C04"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 main-text">Общий доход</h5>
+                                <p class="h3 mb-0 main-text" th:text="${totalRevenue + '₽'}">0₽</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Продажи по авторам -->
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-user-edit me-2" style="color: #4C1C04"></i>Продажи по авторам
-                            </h5>
-                            <div class="chart-container">
-                                <canvas id="authorsChart"></canvas>
+                <div class="col-md-4 mb-3">
+                    <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-opacity-10 p-3 rounded me-3">
+                                <i class="fas fa-users fa-2x" style="color: #4C1C04"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 main-text">Активных клиентов</h5>
+                                <p class="h3 mb-0 main-text" th:text="${activeCustomers}">0</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Второй ряд диаграмм -->
-        <div class="stats-section mb-4">
-            <div class="row">
-                <!-- Динамика продаж -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-calendar-alt me-2" style="color: #4C1C04"></i>Динамика продаж
-                            </h5>
-                            <div class="chart-container" style="height: 300px;">
-                                <canvas id="salesTrendChart"></canvas>
+            <!-- Первый ряд диаграмм -->
+            <div class="stats-section mb-4">
+                <div class="row">
+                    <!-- Самые популярные книги -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-chart-line me-2" style="color: #4C1C04"></i>Топ продаж
+                                </h5>
+                                <div class="chart-container">
+                                    <canvas id="topBooksChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Продажи по жанрам -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-bookmark me-2" style="color: #4C1C04"></i>Продажи по жанрам
+                                </h5>
+                                <div class="chart-container">
+                                    <canvas id="genresChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Продажи по авторам -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-user-edit me-2" style="color: #4C1C04"></i>Продажи по авторам
+                                </h5>
+                                <div class="chart-container">
+                                    <canvas id="authorsChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Использование промокодов -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-tag me-2" style="color: #4C1C04"></i>Использование промокодов
-                            </h5>
-                            <div class="chart-container" style="height: 300px;">
-                                <canvas id="promoCodesChart"></canvas>
+            <!-- Второй ряд диаграмм -->
+            <div class="stats-section mb-4">
+                <div class="row">
+                    <!-- Динамика продаж -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-calendar-alt me-2" style="color: #4C1C04"></i>Динамика продаж
+                                </h5>
+                                <div class="chart-container" style="height: 300px;">
+                                    <canvas id="salesTrendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Использование промокодов -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-tag me-2" style="color: #4C1C04"></i>Использование промокодов
+                                </h5>
+                                <div class="chart-container" style="height: 300px;">
+                                    <canvas id="promoCodesChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>

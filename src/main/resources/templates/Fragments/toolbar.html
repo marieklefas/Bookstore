@@ -12,16 +12,16 @@
 <div th:fragment="toolbar">
     <div class="top-bar py-1 px-3 d-flex justify-content-between align-items-center small text-muted" style="background-color: #FFEFD7;">
         <div>
-            <a th:href="@{/location}" class="me-3 text-decoration-none text-muted">Москва</a>
-            <a th:href="@{/stores}" class="me-3 text-decoration-none text-muted">Магазины</a>
-            <a th:href="@{/deliveryAndPaymentInfo}" class="me-3 text-decoration-none text-muted">Доставка и оплата</a>
+            <a th:href="@{/location}" class="me-3 text-decoration-none" style="color: #6F5649">Москва</a>
+            <a th:href="@{/stores}" class="me-3 text-decoration-none" style="color: #6F5649">Магазины</a>
+            <a th:href="@{/deliveryAndPaymentInfo}" class="me-3 text-decoration-none" style="color: #6F5649">Доставка и оплата</a>
         </div>
         <div class="d-flex gap-3">
             <div sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{/managing}" class="text-decoration-none text-muted">Управление магазином</a>
+                <a th:href="@{/managing}" class="text-decoration-none" style="color: #6F5649">Управление магазином</a>
             </div>
             <div>
-                <a th:href="@{/aboutAuthor}" class="text-decoration-none text-muted">Об авторе</a>
+                <a th:href="@{/aboutAuthor}" class="text-decoration-none" style="color: #6F5649">Об авторе</a>
             </div>
         </div>
     </div>
