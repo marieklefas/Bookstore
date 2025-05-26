@@ -46,7 +46,14 @@
                     </div>
                 </form>
 
-                <p th:if="${param.error}" class="text-danger text-center mt-3">Неверное имя пользователя или пароль</p>
+                <p th:if="${param.error}" class="text-danger text-center mt-3">
+                    <span th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']?.message == 'К сожалению, Вы удалили свой аккаунт. Восстановить его не возможно.'}">
+                        К сожалению, Вы удалили свой аккаунт. Восстановить его не возможно.
+                    </span>
+                    <span th:unless="${session['SPRING_SECURITY_LAST_EXCEPTION']?.message == 'К сожалению, Вы удалили свой аккаунт. Восстановить его не возможно.'}">
+                        Неверное имя пользователя или пароль
+                    </span>
+                </p>
 
                 <div class="text-center mt-3" style="color: #4C1C04">
                     <p>Еще нет аккаунта? <a style="color: #CA8B48" th:href="@{/register}">Зарегистрируйтесь</a></p>

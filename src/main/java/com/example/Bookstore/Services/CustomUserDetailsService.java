@@ -22,6 +22,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
+        if ("Удален".equals(user.getStatus())) {
+            throw new UsernameNotFoundException("К сожалению, Вы удалили свой аккаунт. Восстановить его не возможно.");
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),

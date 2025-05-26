@@ -51,6 +51,11 @@
         .card-title, .text-main {
             color: #4C1C04;
         }
+        .empty-stats-img {
+            max-width: 300px;
+            margin: 0 auto;
+            display: block;
+        }
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
@@ -128,77 +133,84 @@
         <div class="stats-section">
             <h3 class="section-title">Ваши предпочтения в книгах</h3>
 
-            <div class="row">
-                <!-- Жанры -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-bookmark me-2" style="color: #4C1C04"></i>Любимые жанры
-                            </h5>
-                            <div class="chart-container">
-                                <canvas id="genreChart"></canvas>
+            <div th:if="${genreCounts.isEmpty() && tagCounts.isEmpty() && authorCounts.isEmpty() && languageCounts.isEmpty() && coverTypeCounts.isEmpty()}"
+                 class="text-center py-5">
+                <img src="/images/statistics2.png" alt="Статистика отсутствует" class="empty-stats-img">
+            </div>
+
+            <div th:if="!${genreCounts.isEmpty() && tagCounts.isEmpty() && authorCounts.isEmpty() && languageCounts.isEmpty() && coverTypeCounts.isEmpty()}">
+                <div class="row">
+                    <!-- Жанры -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-bookmark me-2" style="color: #4C1C04"></i>Любимые жанры
+                                </h5>
+                                <div class="chart-container">
+                                    <canvas id="genreChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Теги -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-tags me-2" style="color: #4C1C04"></i>Популярные теги
-                            </h5>
-                            <div class="chart-container">
-                                <canvas id="tagChart"></canvas>
+                    <!-- Теги -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-tags me-2" style="color: #4C1C04"></i>Популярные теги
+                                </h5>
+                                <div class="chart-container">
+                                    <canvas id="tagChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Авторы -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-user-edit me-2" style="color: #4C1C04"></i>Любимые авторы
-                            </h5>
-                            <div class="chart-container">
-                                <canvas id="authorChart"></canvas>
+                    <!-- Авторы -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-user-edit me-2" style="color: #4C1C04"></i>Любимые авторы
+                                </h5>
+                                <div class="chart-container">
+                                    <canvas id="authorChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Языки -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-language me-2" style="color: #4C1C04"></i>Языки книг
-                            </h5>
-                            <div class="chart-container">
-                                <canvas id="languageChart"></canvas>
+                    <!-- Языки -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-language me-2" style="color: #4C1C04"></i>Языки книг
+                                </h5>
+                                <div class="chart-container">
+                                    <canvas id="languageChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Типы переплета -->
-                <div class="col-12 mb-4">
-                    <div class="card shadow-sm border-0" style="background-color: #FFF4E2;">
-                        <div class="card-body">
-                            <h5 class="card-title text-center mb-3">
-                                <i class="fas fa-book-open me-2" style="color: #4C1C04"></i>Типы переплета
-                            </h5>
-                            <div class="chart-container" style="height: 300px;">
-                                <canvas id="coverTypeChart"></canvas>
+                    <!-- Типы переплета -->
+                    <div class="col-12 mb-4">
+                        <div class="card shadow-sm border-0" style="background-color: #FFF4E2;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-3">
+                                    <i class="fas fa-book-open me-2" style="color: #4C1C04"></i>Типы переплета
+                                </h5>
+                                <div class="chart-container" style="height: 300px;">
+                                    <canvas id="coverTypeChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>

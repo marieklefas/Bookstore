@@ -53,16 +53,16 @@ public class Book {
     private List<Genre> genres = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "language")
+    @JoinColumn(name = "language", nullable = false)
     private Language language;
 
     @Column(name = "page_number", nullable = false)
     private Integer pageNumber;
 
-    @Column(name = "cover_type")
+    @Column(name = "cover_type", nullable = false)
     private String coverType;
 
-    @Column(name = "age_limit")
+    @Column(name = "age_limit", nullable = false)
     private String ageLimit;
 
     @ManyToMany
@@ -73,18 +73,21 @@ public class Book {
     )
     private List<Tag> tags = new ArrayList<>();
 
-    @Column(name = "publishing_year")
+    @Column(name = "publishing_year", nullable = false)
     private Integer publishingYear;
 
     @ManyToOne
-    @JoinColumn(name = "publisher")
+    @JoinColumn(name = "publisher", nullable = false)
     private Publisher publisher;
 
-    @Column(name = "available_amount")
+    @Column(name = "available_amount", nullable = false)
     private Integer availableAmount;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private Double price;
+
+    @Column(name = "status", nullable = false)
+    private String status;
 
     @ManyToMany(mappedBy = "favorites")
     private List<User> userFavorites = new ArrayList<>();
@@ -140,6 +143,9 @@ public class Book {
 
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public List<User> getUserFavorites() { return userFavorites; }
     public void setUserFavorites(List<User> userFavorites) { this.userFavorites = userFavorites; }

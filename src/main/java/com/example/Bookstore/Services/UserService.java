@@ -23,15 +23,16 @@ public class UserService {
             return false;
         }
 
+        user.setStatus("Активен");
         user.setRole(Collections.singleton("ROLE_USER"));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
         return true;
     }
 
     @Transactional
     public void deleteUserByUsername(String username) {
-        userRepository.deleteByUsername(username);
+        User user = userRepository.findByUsername(username).orElse(null);
+        user.setStatus("Удален");
     }
 
     public boolean checkPassword(User user, String rawPassword) {

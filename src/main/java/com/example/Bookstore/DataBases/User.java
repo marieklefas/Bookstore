@@ -12,7 +12,7 @@ import java.util.Set;
 public class User {
     public User() {}
 
-    public User(long id, String firstName, String lastName, LocalDate birthDate, String email, String username, String password, Set<String> role) {
+    public User(long id, String firstName, String lastName, LocalDate birthDate, String email, String username, String password, String status, Set<String> role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -20,6 +20,7 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.status = status;
         this.role = role;
     }
 
@@ -46,6 +47,9 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "status", nullable = false)
+    private String status;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> role;
@@ -85,6 +89,9 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public Set<String> getRole() { return role; }
     public void setRole(Set<String> role) { this.role = role; }

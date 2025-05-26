@@ -43,9 +43,13 @@ public class ProfileController {
             }
         }
 
+        Set<Book> allBooksForStats = new HashSet<>(favorites);
+        allBooksForStats.addAll(purchasedBooks);
+        List<Book> combinedBooks = new ArrayList<>(allBooksForStats);
+
         // Calculate statistics for charts
         // Genres
-        Map<String, Long> genreCounts = favorites.stream()
+        Map<String, Long> genreCounts = combinedBooks.stream()
                 .flatMap(book -> book.getGenres().stream())
                 .collect(Collectors.groupingBy(
                         genre -> genre.getName() != null ? genre.getName() : "Неизвестный жанр",
@@ -53,7 +57,7 @@ public class ProfileController {
                 ));
 
         // Tags
-        Map<String, Long> tagCounts = favorites.stream()
+        Map<String, Long> tagCounts = combinedBooks.stream()
                 .flatMap(book -> book.getTags().stream())
                 .collect(Collectors.groupingBy(
                         tag -> tag.getName() != null ? tag.getName() : "Неизвестный тег",
@@ -61,7 +65,7 @@ public class ProfileController {
                 ));
 
         // Authors
-        Map<String, Long> authorCounts = favorites.stream()
+        Map<String, Long> authorCounts = combinedBooks.stream()
                 .flatMap(book -> book.getAuthors().stream())
                 .collect(Collectors.groupingBy(
                         author -> author.getName() != null ? author.getName() : "Неизвестный автор",
@@ -69,7 +73,7 @@ public class ProfileController {
                 ));
 
         // Languages
-        Map<String, Long> languageCounts = favorites.stream()
+        Map<String, Long> languageCounts = combinedBooks.stream()
                 .map(Book::getLanguage)
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(
@@ -78,7 +82,7 @@ public class ProfileController {
                 ));
 
         // Cover Types
-        Map<String, Long> coverTypeCounts = favorites.stream()
+        Map<String, Long> coverTypeCounts = combinedBooks.stream()
                 .map(Book::getCoverType)
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(
@@ -225,7 +229,8 @@ public class ProfileController {
                                 HttpServletRequest request) throws ServletException {
         String username = userDetails.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow();
-        userRepository.delete(user);
+        user.setStatus("Удален");
+        userRepository.save(user);
         request.logout();
         return "redirect:/login?accountDeleted";
     }

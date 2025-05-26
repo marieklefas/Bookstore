@@ -60,7 +60,12 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h3 mb-0 section-title">Купленные товары</h1>
         </div>
-        <div class="d-flex flex-wrap gap-3">
+
+        <div th:if="${#lists.isEmpty(purchasedBooks)}" class="text-center py-5">
+            <img src="/images/purchased2.png" alt="Пустая корзина" class="img-fluid mb-3" style="max-width: 300px;">
+        </div>
+
+        <div th:if="!${#lists.isEmpty(purchasedBooks)}" class="d-flex flex-wrap gap-3">
             <div class="card border-0" style="width: 180px; background-color: #FFF4E2;" th:each="book : ${purchasedBooks}">
                 <a th:href="@{/books/{id}(id=${book.id})}" style="text-decoration: none; color: inherit;">
                     <img th:src="@{${book.coverImg}}" class="card-img-top" alt="Обложка книги" style="height: 200px; object-fit: contain;">

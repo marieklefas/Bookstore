@@ -1,5 +1,6 @@
 package com.example.Bookstore.Controllers;
 
+import com.example.Bookstore.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +18,8 @@ import java.time.Period;
 @Controller
 public class RegistrationController {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
+    @Autowired private UserRepository userRepository;
 
     @GetMapping("/login")
     public String personlogin() {
@@ -46,6 +47,7 @@ public class RegistrationController {
         }
 
         if (userService.registerUser(user)) {
+            userRepository.save(user);
             return "redirect:/home";
         } else {
             model.addAttribute("error", "Пользователь уже существует");

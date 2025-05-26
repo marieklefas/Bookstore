@@ -13,4 +13,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUser(User user);
     Optional<Order> findById(String id);
     List<Order> findByOrderDateAfter(LocalDateTime startDate);
+    List<Order> findAllByOrderByOrderDateDesc();
 }

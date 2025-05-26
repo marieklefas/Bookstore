@@ -14,6 +14,30 @@
             border-bottom: 1px solid #E7C39C;
             padding-bottom: 10px;
         }
+        .author-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .author-image {
+            width: 200px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .author-text {
+            flex: 1;
+        }
+        @media (max-width: 768px) {
+            .author-container {
+                flex-direction: column;
+            }
+            .author-image {
+                width: 100%;
+                max-width: 300px;
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
@@ -25,22 +49,27 @@
     </div>
 
     <div class="card p-4 border-0 shadow-sm" style="background-color: #FFF4E2; color: #4C1C04">
-        <p align="justify">
-            Здравствуйте!
-        </p>
-        <p align="justify">
-            Меня зовут Клефас Мария Сергеевна.
-            Я являюсь студенткой второго курса Финансового университета при Правительстве Российско Федерации.
-            Я прохожу обучение по направлению «Технологии разработки программного обеспечения».
-        </p>
-        <p align="justify">
-            Данный сайт был разработан в рамках моего курсового проекта по дисциплине «Современные технологии программирования».
-            Тема проекта — «Информационно-справочная система книжного магазина».
-            Основная цель — облегчить управление книжным магазином и улучшить опыт взаимодействия пользователей с сетью магазинов J'aime lire.
-        </p>
-        <p align="justify">
-            Контактная информация для связи: 233536@edu.fa.ru или klefasmarie@gmail.com
-        </p>
+        <div class="author-container">
+            <img src="/images/author1.png" alt="Фото разработчика" class="author-image">
+            <div class="author-text">
+                <p align="justify">
+                    Здравствуйте!
+                </p>
+                <p align="justify">
+                    Меня зовут Клефас Мария Сергеевна.
+                    Я являюсь студенткой второго курса Финансового университета при Правительстве Российско Федерации.
+                    Я прохожу обучение по направлению «Технологии разработки программного обеспечения».
+                </p>
+                <p align="justify">
+                    Данный сайт был разработан в рамках моего курсового проекта по дисциплине «Современные технологии программирования».
+                    Тема проекта — «Информационно-справочная система книжного магазина».
+                    Основная цель — облегчить управление книжным магазином и улучшить опыт взаимодействия пользователей с сетью магазинов J'aime lire.
+                </p>
+                <p align="justify">
+                    Контактная информация для связи: 233536@edu.fa.ru или klefasmarie@gmail.com
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 </body>

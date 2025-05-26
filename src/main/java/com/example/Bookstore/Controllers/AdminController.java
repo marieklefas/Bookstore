@@ -3,6 +3,7 @@ package com.example.Bookstore.Controllers;
 import com.example.Bookstore.DataBases.*;
 import com.example.Bookstore.Repositories.*;
 
+import com.example.Bookstore.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -16,9 +17,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.time.Period;
+import java.util.*;
 
 @Controller
 @RequestMapping("/managing")
@@ -30,6 +30,9 @@ public class AdminController {
     @Autowired private TagRepository tagRepository;
     @Autowired private PublisherRepository publisherRepository;
     @Autowired private PromoCodeRepository promoCodeRepository;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private UserService userService;
 
 
     @GetMapping("/addauthor")
@@ -186,7 +189,6 @@ public class AdminController {
         Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         book.setCoverImg("/images/" + filename);
 
-
         List<Author> authors = authorRepository.findAllById(authorIds);
         book.setAuthors(authors);
 
@@ -201,6 +203,7 @@ public class AdminController {
         languageRepository.findById(languageId).ifPresent(book::setLanguage);
         publisherRepository.findById(publisherId).ifPresent(book::setPublisher);
 
+        book.setStatus("Активна");
         bookRepository.save(book);
         return "redirect:/managing/addbook";
     }
@@ -273,8 +276,114 @@ public class AdminController {
 
     @PostMapping("/deletebook/{id}")
     public String deleteBook(@PathVariable Long id) {
-
-        bookRepository.deleteById(id);
+        Book book = bookRepository.findById(id).orElse(null);
+        book.setStatus("Удалена");
+        bookRepository.save(book);
+        System.out.print("Status is " + book.getStatus());
         return "redirect:/home";
     }
+
+
+    @GetMapping("/allbooks")
+    public String showAllBooks(Model model) {
+        List<Book> allBooks = bookRepository.findAll();
+        model.addAttribute("allBooks", allBooks);
+        return "Managing/allBooks";
+    }
+
+    @PostMapping("/restorebook/{id}")
+    public String restoreBook(@PathVariable Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найдена книга с id: " + id));
+
+        if ("Удалена".equals(book.getStatus())) {
+            book.setStatus("Активна");
+            bookRepository.save(book);
+        }
+
+        return "redirect:/managing/allbooks";
+    }
+
+    @GetMapping("/manageorders")
+    public String showAllOrders(Model model) {
+        List<Order> allOrders = orderRepository.findAllByOrderByOrderDateDesc();
+        model.addAttribute("allOrders", allOrders);
+        return "Managing/manageOrders";
+    }
+
+    @GetMapping("/manageorders/order/{id}")
+    public String showOrderDetails(@PathVariable String id, Model model) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден заказ с id: " + id));
+        model.addAttribute("order", order);
+        return "Managing/manageOrderDetails";
+    }
+
+    @PostMapping("/manageorders/complete/{id}")
+    public String completeOrder(@PathVariable String id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Не найден заказ с id: " + id));
+
+        if (!"Завершен".equals(order.getStatus())) {
+            order.setStatus("Завершен");
+            orderRepository.save(order);
+        }
+
+        return "redirect:/managing/manageorders/order/" + id;
+    }
+
+    @GetMapping("/addemployee")
+    public String showAddEmployeeForm(Model model) {
+        model.addAttribute("user", new User());
+        return "Managing/addEmployee";
+    }
+
+    @PostMapping("/addemployee")
+    public String showAddEmployeeForm(@ModelAttribute("user") User user, @RequestParam("confirmPassword") String confirmPassword, Model model) {
+        if (!user.getPassword().equals(confirmPassword)) {
+            model.addAttribute("error", "Пароли не совпадают");
+            return "Managing/addEmployee";
+        }
+
+        LocalDate birthDate = user.getBirthDate();
+        int age = Period.between(birthDate, LocalDate.now()).getYears();
+        if (age < 12 || age > 120) {
+            model.addAttribute("error", "Возраст должен быть от 12 до 120 лет");
+            return "Managing/addEmployee";
+        }
+
+        if (userService.registerUser(user)) {
+            user.setStatus("Активен");
+            user.setRole(Collections.singleton("ROLE_ADMIN"));
+            userRepository.save(user);
+            model.addAttribute("success", "Сотрудник успешно добавлен");
+            model.addAttribute("user", new User());
+            return "redirect:/managing/addemployee";
+        } else {
+            model.addAttribute("error", "Пользователь уже существует");
+            return "Managing/addEmployee";
+        }
+    }
+
+    @GetMapping("/manageusers")
+    public String showAllUsers(Model model) {
+        List<User> users = userRepository.findAll();
+        model.addAttribute("users", users);
+        return "Managing/manageUsers";
+    }
+
+    @PostMapping("/manageusers/update/{id}")
+    public String updateUser(@PathVariable Long id,
+                             @RequestParam String status,
+                             @RequestParam String role,
+                             Model model) {
+        User user = userRepository.findById(id).orElse(null);
+        user.setStatus(status);
+        Set<String> roles = new HashSet<>();
+        roles.add(role);
+        user.setRole(roles);
+        userRepository.save(user);
+        return "redirect:/managing/manageusers";
+    }
+
 }

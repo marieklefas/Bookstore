@@ -69,19 +69,23 @@
                     <div class="row align-items-center">
                         <!-- Обложка -->
                         <div class="col-2">
-                            <img th:src="${item.book.coverImg}" alt="Обложка"
-                                 class="img-thumbnail" style="width: 80px; height: 120px; object-fit: cover; background-color: #FFF4E2;">
+                            <a th:href="@{/books/{id}(id=${item.book.id})}">
+                                <img th:src="${item.book.coverImg}" alt="Обложка"
+                                     class="img-thumbnail" style="width: 80px; height: 120px; object-fit: cover; background-color: #FFF4E2;">
+                            </a>
                         </div>
 
                         <!-- Название и автор -->
                         <div class="col-4">
-                            <h5 class="mb-1 main-text" th:text="${item.book.title}"></h5>
-                            <p class="lighter-text small mb-1">
-                                <span th:each="a, iterStat : ${item.book.authors}">
-                                    <span th:text="${a.name}"></span>
-                                    <span th:unless="${iterStat.last}">, </span>
-                                </span>
-                            </p>
+                            <a th:href="@{/books/{id}(id=${item.book.id})}" class="text-decoration-none">
+                                <h5 class="mb-1 main-text" th:text="${item.book.title}"></h5>
+                                <p class="lighter-text small mb-1">
+                                    <span th:each="a, iterStat : ${item.book.authors}">
+                                        <span th:text="${a.name}"></span>
+                                        <span th:unless="${iterStat.last}">, </span>
+                                    </span>
+                                </p>
+                            </a>
                         </div>
 
                         <!-- Цена за штуку -->

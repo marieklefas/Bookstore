@@ -46,6 +46,7 @@ public class ToolbarController {
         Map<Tag, List<Book>> tagBookMap = new LinkedHashMap<>();
         for (Tag tag : allTags) {
             List<Book> books = tag.getBooks().stream()
+                    .filter(book -> "Активна".equals(book.getStatus()))
                     .sorted(Comparator.comparing(Book::getTitle)) // сортировка по названию
                     .limit(5)
                     .toList();
@@ -132,7 +133,9 @@ public class ToolbarController {
         model.addAttribute("selectedMaxPrice", maxPriceValue);
 
         // Фильтрация книг
-        Specification<Book> spec = Specification.where(null);
+        Specification<Book> spec = Specification.where((root, query, cb) ->
+                cb.equal(root.get("status"), "Активна")
+        );
 
         if (authors != null && !authors.isEmpty()) {
             spec = spec.and((root, query, cb) -> {
@@ -270,7 +273,9 @@ public class ToolbarController {
         model.addAttribute("selectedMaxPrice", maxPriceValue);
 
         // Фильтрация книг
-        Specification<Book> spec = Specification.where(null);
+        Specification<Book> spec = Specification.where((root, query, cb) ->
+                cb.equal(root.get("status"), "Активна")
+        );
 
         // Базовый фильтр по поисковому запросу
         spec = spec.and((root, query, cb) -> {

@@ -125,15 +125,61 @@
     </div>
 
     <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/allbooks'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <img src="/images/books.png" class="action-icon" style="max-width: 24px; max-height: 24px;">
+<!--            <i class="fas fa-books action-icon" style="color: #4C1C04"></i>-->
+            <h5 class="action-title">Управление книгами</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/manageorders'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-cart-shopping action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление заказами</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/addemployee'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fa-regular fa-address-card action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Добавить сотрудника</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <a th:href="@{${baseUrl + '/manageusers'}}" style="text-decoration: none; color: inherit;">
+        <div class="action-card">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-user-gear action-icon" style="color: #4C1C04"></i>
+            <h5 class="action-title">Управление пользователями</h5>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3 mb-3">
       <a th:href="@{${baseUrl + '/statistics'}}" style="text-decoration: none; color: inherit;">
         <div class="action-card">
           <div class="d-flex align-items-center">
-            <i class="fas fa-chart-bar action-icon" style="color: #4C1C04"></i>
+            <i class="fas fa-chart-line action-icon" style="color: #4C1C04"></i>
             <h5 class="action-title">Посмотреть статистику</h5>
           </div>
         </div>
       </a>
     </div>
+
   </div>
 </div>
 </body>
