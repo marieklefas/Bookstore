@@ -369,6 +369,7 @@ public class AdminController {
     public String showAllUsers(Model model) {
         List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
+        model.addAttribute("countUsers", users.size());
         return "Managing/manageUsers";
     }
 

@@ -74,7 +74,9 @@ public class StatisticController {
 
     private long calculateActiveCustomers(List<Order> orders) {
         return orders.stream()
-                .map(o -> o.getUser().getId())
+                .map(Order::getUser)
+                .filter(user -> "Активен".equals(user.getStatus()))
+                .map(User::getId)
                 .distinct()
                 .count();
     }
