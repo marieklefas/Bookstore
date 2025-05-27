@@ -93,33 +93,6 @@
              class="btn edit-btn me-2">
             <i class="bi bi-pencil" style="color: #797876"></i> Редактировать
           </a>
-
-          <button type="button" class="btn btn-outline-danger"
-                  data-bs-toggle="modal" data-bs-target="#deleteBookModal">
-            <i class="bi bi-trash"></i> Удалить
-          </button>
-        </div>
-      </div>
-
-      <!-- Модальное окно подтверждения удаления -->
-      <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteBookModalLabel">Подтверждение удаления</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Вы уверены, что хотите удалить книгу "<span th:text="${book.title}"></span>"?
-              Это действие нельзя отменить.
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-              <form th:action="@{/managing/deletebook/{id}(id=${book.id})}" method="post">
-                <button type="submit" class="btn btn-danger">Удалить</button>
-              </form>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -252,12 +225,13 @@
       <h4>Похожие книги</h4>
       <a th:href="@{/catalog(genres=${book.genres.![id]},tags=${book.tags.![id]})}"
          class="text-decoration-none" style="color: #4C1C04">
-        Смотреть все <i class="fa fa-arrow-right" aria-hidden="true"></i>
+        Смотреть все
+        <i class="fa fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
 
     <div class="d-flex flex-wrap gap-3">
-      <div class="card border-0" style="width: 180px; background-color: #FFF4E2;" th:each="similarBook : ${similarBooks}">
+      <div class="card border-0" style="width: 170px; background-color: #FFF4E2;" th:each="similarBook : ${similarBooks}">
         <a th:href="@{/books/{id}(id=${similarBook.id})}" style="text-decoration: none; color: inherit;">
           <img th:src="@{${similarBook.coverImg}}" class="card-img-top" alt="Обложка книги" style="height: 200px; object-fit: contain;">
           <div class="card-body p-2">

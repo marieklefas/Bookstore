@@ -18,11 +18,6 @@
             padding-bottom: 10px;
         }
 
-        .error-message {
-            color: red;
-            margin-bottom: 10px;
-        }
-
         .form-group, .card {
             background-color: #FFF4E2;
             color: #4C1C04;
@@ -81,6 +76,28 @@
         .back-btn:hover {
             background-color: #D5CDC5 !important;
         }
+
+        /* Стили для переключателя вкладок */
+        .btn-group .btn {
+            flex: 1;
+            border-radius: 0;
+            border: 1px solid #E7C39C;
+        }
+
+        .btn-group .btn.active {
+            background-color: #E7C39C;
+            color: #4C1C04;
+        }
+
+        .btn-group .btn:first-child {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .btn-group .btn:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
@@ -104,11 +121,24 @@
             <!-- Обложка книги -->
             <div class="col-md-4 mb-4">
                 <div class="card border-0 shadow-sm" style="background-color: #FFF4E2;">
-                    <img th:src="@{${book.coverImg}}" id="coverPreview" class="img-fluid rounded mb-3" alt="Обложка книги" style="max-height: 500px; object-fit: contain;" required>
-                    <div class="form-group">
-<!--                        <label class="form-label">Обложка</label>-->
+                    <img th:src="@{${book.coverImg}}" id="coverPreview" class="img-fluid rounded mb-3" alt="Обложка книги" style="max-height: 500px; object-fit: contain;">
+
+                    <div class="btn-group w-100 mb-3" role="group">
+                        <button type="button" class="btn btn-sm custom-btn active" id="uploadTabBtn">Загрузить файл</button>
+                        <button type="button" class="btn btn-sm custom-btn" id="urlTabBtn">Указать URL</button>
+                    </div>
+
+                    <div class="form-group" id="uploadFileBlock">
+                        <label class="form-label">Загрузите файл</label>
                         <input type="file" class="form-control" style="background-color: #FFF4E2" id="coverFile" name="coverFile" onchange="previewImage(this)">
                     </div>
+
+                    <div class="form-group d-none" id="urlInputBlock">
+                        <label class="form-label">Вставьте URL изображения</label>
+                        <input type="url" class="form-control" id="coverUrl" name="coverUrl" placeholder="https://example.com/image.jpg" oninput="previewImageFromUrl(this.value)">
+                    </div>
+
+                    <input type="hidden" id="coverSourceType" name="coverSourceType" value="file">
                 </div>
             </div>
 
@@ -233,13 +263,13 @@
                     </select>
                 </div>
 
-                <!-- Кнопки сохранения и отмены -->
                 <div class="d-flex justify-content-end gap-2">
                     <button type="submit" class="btn save-btn">Добавить</button>
                 </div>
             </div>
         </div>
     </form>
+    <p th:if="${error}" class="text-danger text-center mt-3" th:text="${error}"></p>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -264,11 +294,48 @@
         });
     });
 
+    document.getElementById('uploadTabBtn').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('urlTabBtn').classList.remove('active');
+        document.getElementById('uploadFileBlock').classList.remove('d-none');
+        document.getElementById('urlInputBlock').classList.add('d-none');
+        document.getElementById('coverSourceType').value = 'file';
+        document.getElementById('coverUrl').value = '';
+    });
+
+    document.getElementById('urlTabBtn').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('uploadTabBtn').classList.remove('active');
+        document.getElementById('uploadFileBlock').classList.add('d-none');
+        document.getElementById('urlInputBlock').classList.remove('d-none');
+        document.getElementById('coverSourceType').value = 'url';
+        document.getElementById('coverFile').value = '';
+
+        const url = document.getElementById('coverUrl').value;
+        if (url) {
+            previewImageFromUrl(url);
+        }
+    });
+
     document.querySelector('form').addEventListener('submit', function(event) {
         const coverFile = document.querySelector('#coverFile');
         if (!coverFile.files.length) {
             event.preventDefault();
             alert('Пожалуйста, выберите обложку книги');
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const coverSourceType = document.getElementById('coverSourceType').value;
+        const coverFile = document.getElementById('coverFile');
+        const coverUrl = document.getElementById('coverUrl');
+
+        if (coverSourceType === 'file' && !coverFile.files.length) {
+            event.preventDefault();
+            alert('Пожалуйста, выберите обложку книги или укажите URL изображения');
+        } else if (coverSourceType === 'url' && !coverUrl.value) {
+            event.preventDefault();
+            alert('Пожалуйста, укажите URL изображения или загрузите файл');
         }
     });
 
@@ -280,6 +347,29 @@
                 document.getElementById('coverPreview').src = e.target.result;
             };
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewImageFromUrl(url) {
+        if (!url) {
+            // Если URL пуст, показываем placeholder или скрываем изображение
+            document.getElementById('coverPreview').src = '/images/default-book-cover.jpg'; // или другой placeholder
+            return;
+        }
+
+        // Проверяем, похож ли ввод на URL изображения
+        if (url.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i)) {
+            // Создаем новое изображение для проверки
+            const img = new Image();
+            img.onload = function() {
+                // Если изображение загрузилось успешно, показываем его
+                document.getElementById('coverPreview').src = url;
+            };
+            img.onerror = function() {
+                // Если изображение не загрузилось, показываем placeholder
+                document.getElementById('coverPreview').src = '/images/default-book-cover.jpg';
+            };
+            img.src = url;
         }
     }
 </script>

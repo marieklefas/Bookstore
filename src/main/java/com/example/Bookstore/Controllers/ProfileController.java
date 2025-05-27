@@ -156,6 +156,7 @@ public class ProfileController {
         Collections.reverse(favorites);
 
         model.addAttribute("favoriteBooks", favorites);
+        model.addAttribute("favoritesCount", favorites.size());
         return "Profile/favorites";
     }
 
@@ -252,6 +253,7 @@ public class ProfileController {
         List<Book> purchasedBooksList = new ArrayList<>(purchasedBooks);
 
         model.addAttribute("purchasedBooks", purchasedBooksList);
+        model.addAttribute("purchasesCount", purchasedBooksList.size());
         return "Profile/purchased";
     }
 

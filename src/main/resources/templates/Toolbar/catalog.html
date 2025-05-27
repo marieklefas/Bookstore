@@ -133,6 +133,32 @@
             <div class="selected-filters">
                 <button class="btn custom-btn reset-btn" onclick="resetAllFilters()">Сбросить все фильтры</button>
             </div>
+
+            <div class="filter-section mt-3">
+                <h5>Сортировка</h5>
+                <select class="form-control" id="sort-by" onchange="applyFilters()">
+                    <option value="" th:selected="${selectedSort == null}">По умолчанию</option>
+                    <option value="popular" th:selected="${selectedSort == 'popular'}">По популярности</option>
+                    <option value="price_asc" th:selected="${selectedSort == 'price_asc'}">По возрастанию цены</option>
+                    <option value="price_desc" th:selected="${selectedSort == 'price_desc'}">По убыванию цены</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <label class="form-check-label" for="in-stock-toggle">В наличии</label>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="in-stock-toggle" onchange="applyFilters()"
+                                   th:checked="${inStock != null and inStock}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Фильтры -->
             <div class="filter-section">
                 <h5>Авторы</h5>
@@ -439,6 +465,16 @@
     function applyFilters() {
         const params = new URLSearchParams();
 
+        const sortBy = $('#sort-by').val();
+        if (sortBy) {
+            params.append('sortBy', sortBy);
+        }
+
+        const inStock = $('#in-stock-toggle').is(':checked');
+        if (inStock) {
+            params.append('inStock', 'true');
+        }
+
         // Собираем параметры из всех фильтров
         const authors = $('#authors').val();
         if (authors && authors.length > 0) {
@@ -464,8 +500,6 @@
         if (publishers && publishers.length > 0) {
             publishers.forEach(publisher => params.append('publishers', publisher));
         }
-
-
 
         const minYear = $('#min-year').val();
         const maxYear = $('#max-year').val();
@@ -496,7 +530,6 @@
         // Обновляем URL без перезагрузки страницы
         history.pushState(null, '', '/catalog?' + params.toString());
 
-        // Отправляем AJAX-запрос для обновления списка книг
         $.ajax({
             url: '/catalog?' + params.toString(),
             type: 'GET',
@@ -508,6 +541,11 @@
 
                 const newFilters = htmlDoc.querySelector('.selected-filters').innerHTML;
                 document.querySelector('.selected-filters').innerHTML = newFilters;
+
+                document.querySelector('.col-md-9').innerHTML = htmlDoc.querySelector('.col-md-9').innerHTML;
+
+                const currentInStock = $('#in-stock-toggle').is(':checked');
+                $('#in-stock-toggle').prop('checked', currentInStock);
             }
         });
     }
@@ -516,6 +554,7 @@
         // Сбрасываем все фильтры
         $('.filter-select').val(null).trigger('change');
         $('.cover-type-check, .age-limit-check').prop('checked', false);
+        $('#sort-by').val('');
 
         const minYear = [[${minYearAvailable}]];
         const maxYear = [[${maxYearAvailable}]];
@@ -528,6 +567,8 @@
         $('#min-price').val(minPrice);
         $('#max-price').val(maxPrice);
         document.getElementById('price-slider').noUiSlider.set([minPrice, maxPrice]);
+
+        $('#in-stock-toggle').prop('checked', false);
 
         applyFilters();
     }

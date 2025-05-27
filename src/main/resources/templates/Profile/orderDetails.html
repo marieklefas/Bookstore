@@ -71,7 +71,7 @@
                         <div class="col-2">
                             <a th:href="@{/books/{id}(id=${item.book.id})}">
                                 <img th:src="${item.book.coverImg}" alt="Обложка"
-                                     class="img-thumbnail" style="width: 80px; height: 120px; object-fit: cover; background-color: #FFF4E2;">
+                                     class="card-img-top" style="width: 80px; height: 120px; object-fit: cover; background-color: #FFF4E2;">
                             </a>
                         </div>
 
@@ -110,8 +110,9 @@
         <!-- Итоговая информация -->
         <div class="d-flex justify-content-end">
             <div class="text-end main-text" style="min-width: 300px;">
+                <p>Общая сумма заказа: <strong th:text="${order.totalPrice + '₽'}"></strong></p>
                 <p>Промокод: <strong th:text="${order.promoCode?.code ?: '—'}"></strong></p>
-                <p>Скидка: <strong th:text="${order.discount + '%'}"></strong></p>
+                <p>Скидка: <strong th:text="${order.discount + '₽'}"></strong></p>
                 <p class="fs-5 main-text">Итого: <strong th:text="${order.finalPrice + '₽'}"></strong></p>
             </div>
         </div>

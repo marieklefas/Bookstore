@@ -5,8 +5,6 @@ import com.example.Bookstore.Repositories.*;
 import com.example.Bookstore.Services.BookService;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +46,7 @@ public class ToolbarController {
             List<Book> books = tag.getBooks().stream()
                     .filter(book -> "Активна".equals(book.getStatus()))
                     .sorted(Comparator.comparing(Book::getTitle)) // сортировка по названию
-                    .limit(5)
+                    .limit(6)
                     .toList();
             if (!books.isEmpty()) {
                 tagBookMap.put(tag, books);
@@ -86,6 +84,8 @@ public class ToolbarController {
 
     @GetMapping("/catalog")
     public String catalogPage(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) Boolean inStock,
             @RequestParam(required = false) Long tag,
             @RequestParam(required = false) List<Long> authors,
             @RequestParam(required = false) List<Long> genres,
@@ -136,6 +136,12 @@ public class ToolbarController {
         Specification<Book> spec = Specification.where((root, query, cb) ->
                 cb.equal(root.get("status"), "Активна")
         );
+
+        if (inStock != null && inStock) {
+            spec = spec.and((root, query, cb) ->
+                    cb.greaterThan(root.get("availableAmount"), 0)
+            );
+        }
 
         if (authors != null && !authors.isEmpty()) {
             spec = spec.and((root, query, cb) -> {
@@ -207,9 +213,27 @@ public class ToolbarController {
         }
 
         List<Book> books = bookRepository.findAll(spec);
-        model.addAttribute("books", books);
 
-        // Передаем выбранные фильтры для отображения
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "price_asc":
+                    books.sort(Comparator.comparing(Book::getPrice));
+                    break;
+                case "price_desc":
+                    books.sort(Comparator.comparing(Book::getPrice).reversed());
+                    break;
+                case "popular":
+                    books.sort((b1, b2) -> {
+                        int b1Popularity = b1.getUserFavorites().size() + b1.getOrderItems().size();
+                        int b2Popularity = b2.getUserFavorites().size() + b2.getOrderItems().size();
+                        return Integer.compare(b2Popularity, b1Popularity); // По убыванию
+                    });
+                    break;
+            }
+        }
+
+        model.addAttribute("books", books);
+        model.addAttribute("inStock", inStock);
         model.addAttribute("selectedAuthors", authors);
         model.addAttribute("selectedGenres", genres);
         model.addAttribute("selectedTags", allSelectedTags);
@@ -222,7 +246,9 @@ public class ToolbarController {
     }
 
     @GetMapping("/search")
-    public String searchPage(@RequestParam String q,
+    public String searchPage(@RequestParam(required = false) String sortBy,
+                             @RequestParam(required = false) Boolean inStock,
+                             @RequestParam String q,
                              @RequestParam(required = false) List<Long> authors,
                              @RequestParam(required = false) List<Long> genres,
                              @RequestParam(required = false) List<Long> tags,
@@ -276,6 +302,12 @@ public class ToolbarController {
         Specification<Book> spec = Specification.where((root, query, cb) ->
                 cb.equal(root.get("status"), "Активна")
         );
+
+        if (inStock != null && inStock) {
+            spec = spec.and((root, query, cb) ->
+                    cb.greaterThan(root.get("availableAmount"), 0)
+            );
+        }
 
         // Базовый фильтр по поисковому запросу
         spec = spec.and((root, query, cb) -> {
@@ -356,9 +388,27 @@ public class ToolbarController {
         }
 
         List<Book> books = bookRepository.findAll(spec);
-        model.addAttribute("books", books);
 
-        // Передаем выбранные фильтры для отображения
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "price_asc":
+                    books.sort(Comparator.comparing(Book::getPrice));
+                    break;
+                case "price_desc":
+                    books.sort(Comparator.comparing(Book::getPrice).reversed());
+                    break;
+                case "popular":
+                    books.sort((b1, b2) -> {
+                        int b1Popularity = b1.getUserFavorites().size() + b1.getOrderItems().size();
+                        int b2Popularity = b2.getUserFavorites().size() + b2.getOrderItems().size();
+                        return Integer.compare(b2Popularity, b1Popularity); // По убыванию
+                    });
+                    break;
+            }
+        }
+
+        model.addAttribute("books", books);
+        model.addAttribute("inStock", inStock);
         model.addAttribute("selectedAuthors", authors);
         model.addAttribute("selectedGenres", genres);
         model.addAttribute("selectedTags", tags);

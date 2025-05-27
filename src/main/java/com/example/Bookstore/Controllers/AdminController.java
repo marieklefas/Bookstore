@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -155,7 +157,9 @@ public class AdminController {
 
     @PostMapping("/addbook")
     public String addBook(@ModelAttribute Book book,
-                          @RequestParam(value = "coverFile", required = true) MultipartFile coverFile,
+                          @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
+                          @RequestParam(value = "coverUrl", required = false) String coverUrl,
+                          @RequestParam("coverSourceType") String coverSourceType,
                           @RequestParam("authorIds") List<Long> authorIds,
                           @RequestParam("genreIds") List<Long> genreIds,
                           @RequestParam(value = "tagIds", required = false) List<Long> tagIds,
@@ -163,31 +167,43 @@ public class AdminController {
                           @RequestParam("publisherId") Long publisherId,
                           Model model) throws IOException {
 
-        if (coverFile == null || coverFile.isEmpty()) {
+        if (("file".equals(coverSourceType) && (coverFile == null || coverFile.isEmpty()))) {
             model.addAttribute("error", "Обложка книги обязательна для загрузки");
-            // Repopulate form fields to preserve user input
-            model.addAttribute("book", book);
-            model.addAttribute("authors", authorRepository.findAll());
-            model.addAttribute("genres", genreRepository.findAll());
-            model.addAttribute("tags", tagRepository.findAll());
-            model.addAttribute("languages", languageRepository.findAll());
-            model.addAttribute("publishers", publisherRepository.findAll());
-
-            model.addAttribute("selectedAuthorIds", authorIds);
-            model.addAttribute("selectedGenreIds", genreIds);
-            model.addAttribute("selectedTagIds", tagIds != null ? tagIds : new ArrayList<Long>());
-            model.addAttribute("selectedLanguageId", languageId);
-            model.addAttribute("selectedPublisherId", publisherId);
-            return "addBook";
+            return populateModelAndReturn(model, book, authorIds, genreIds, tagIds, languageId, publisherId);
+        } else if ("url".equals(coverSourceType) && (coverUrl == null || coverUrl.isEmpty())) {
+            model.addAttribute("error", "URL обложки обязателен");
+            return populateModelAndReturn(model, book, authorIds, genreIds, tagIds, languageId, publisherId);
         }
 
-        String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
-        String filename = UUID.randomUUID() + "_" + originalFilename;
-        Path uploadPath = Paths.get("uploads/images/");
-        Files.createDirectories(uploadPath);
-        Path filePath = uploadPath.resolve(filename);
-        Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        book.setCoverImg("/images/" + filename);
+        if ("file".equals(coverSourceType)) {
+            // Загрузка файла с устройства
+            String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
+            String filename = UUID.randomUUID() + "_" + originalFilename;
+            Path uploadPath = Paths.get("uploads/images/");
+            Files.createDirectories(uploadPath);
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            book.setCoverImg("/images/" + filename);
+        } else {
+            // Загрузка по URL
+            try {
+                String filename = UUID.randomUUID() + ".jpg";
+                Path uploadPath = Paths.get("uploads/images/");
+                Files.createDirectories(uploadPath);
+                Path filePath = uploadPath.resolve(filename);
+
+                // Скачиваем изображение по URL
+                URL url = new URL(coverUrl);
+                try (InputStream in = url.openStream()) {
+                    Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                book.setCoverImg("/images/" + filename);
+            } catch (Exception e) {
+                model.addAttribute("error", "Не удалось загрузить изображение по указанному URL");
+                return populateModelAndReturn(model, book, authorIds, genreIds, tagIds, languageId, publisherId);
+            }
+        }
 
         List<Author> authors = authorRepository.findAllById(authorIds);
         book.setAuthors(authors);
@@ -206,6 +222,25 @@ public class AdminController {
         book.setStatus("Активна");
         bookRepository.save(book);
         return "redirect:/managing/addbook";
+    }
+
+    private String populateModelAndReturn(Model model, Book book, List<Long> authorIds,
+                                          List<Long> genreIds, List<Long> tagIds,
+                                          Long languageId, Long publisherId) {
+        model.addAttribute("book", book);
+        model.addAttribute("authors", authorRepository.findAll());
+        model.addAttribute("genres", genreRepository.findAll());
+        model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute("languages", languageRepository.findAll());
+        model.addAttribute("publishers", publisherRepository.findAll());
+
+        model.addAttribute("selectedAuthorIds", authorIds);
+        model.addAttribute("selectedGenreIds", genreIds);
+        model.addAttribute("selectedTagIds", tagIds != null ? tagIds : new ArrayList<Long>());
+        model.addAttribute("selectedLanguageId", languageId);
+        model.addAttribute("selectedPublisherId", publisherId);
+
+        return "Managing/addBook";
     }
 
     @GetMapping("/editbook/{id}")
@@ -227,11 +262,14 @@ public class AdminController {
     public String editBook(@PathVariable Long id,
                            @ModelAttribute Book book,
                            @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
+                           @RequestParam(value = "coverUrl", required = false) String coverUrl,
+                           @RequestParam("coverSourceType") String coverSourceType,
                            @RequestParam("authorIds") List<Long> authorIds,
                            @RequestParam("genreIds") List<Long> genreIds,
                            @RequestParam("tagIds") List<Long> tagIds,
                            @RequestParam("languageId") Long languageId,
-                           @RequestParam("publisherId") Long publisherId) throws IOException {
+                           @RequestParam("publisherId") Long publisherId,
+                           Model model) throws IOException {
 
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
@@ -247,7 +285,8 @@ public class AdminController {
         existingBook.setDescription(book.getDescription());
 
         // Обновляем обложку, если загружена новая
-        if (coverFile != null && !coverFile.isEmpty()) {
+        if ("file".equals(coverSourceType) && coverFile != null && !coverFile.isEmpty()) {
+            // Загрузка файла с устройства
             String originalFilename = coverFile.getOriginalFilename().replaceAll("\\s+", "_");
             String filename = UUID.randomUUID() + "_" + originalFilename;
             Path uploadPath = Paths.get("uploads/images/");
@@ -255,6 +294,25 @@ public class AdminController {
             Path filePath = uploadPath.resolve(filename);
             Files.copy(coverFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
             existingBook.setCoverImg("/images/" + filename);
+        } else if ("url".equals(coverSourceType) && coverUrl != null && !coverUrl.isEmpty()) {
+            // Загрузка по URL
+            try {
+                String filename = UUID.randomUUID() + ".jpg";
+                Path uploadPath = Paths.get("uploads/images/");
+                Files.createDirectories(uploadPath);
+                Path filePath = uploadPath.resolve(filename);
+
+                // Скачиваем изображение по URL
+                URL url = new URL(coverUrl);
+                try (InputStream in = url.openStream()) {
+                    Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                existingBook.setCoverImg("/images/" + filename);
+            } catch (Exception e) {
+                model.addAttribute("error", "Не удалось загрузить изображение по указанному URL");
+                return "redirect:/managing/editbook/" + id;
+            }
         }
 
         // Обновляем связанные сущности
@@ -280,7 +338,7 @@ public class AdminController {
         book.setStatus("Удалена");
         bookRepository.save(book);
         System.out.print("Status is " + book.getStatus());
-        return "redirect:/home";
+        return "redirect:/managing/allbooks";
     }
 
 

@@ -35,6 +35,9 @@ public class BookController {
                 book.getId(),
                 book.getGenres().stream().map(Genre::getId).collect(Collectors.toList()),
                 book.getTags().stream().map(Tag::getId).collect(Collectors.toList())
+                ).stream()
+                .limit(6)
+                .collect(Collectors.toList()
         );
 
         model.addAttribute("similarBooks", similarBooks);

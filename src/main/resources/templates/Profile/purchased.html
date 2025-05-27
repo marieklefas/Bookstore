@@ -48,6 +48,9 @@
         .favorite-btn:hover {
             background-color: #E79C9C !important;
         }
+        .lighter-text {
+            color: #6F5649;
+        }
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
@@ -59,6 +62,7 @@
     <div class="container my-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h3 mb-0 section-title">Купленные товары</h1>
+            <span class="lighter-text">Всего: <span th:text="${purchasesCount}">0</span></span>
         </div>
 
         <div th:if="${#lists.isEmpty(purchasedBooks)}" class="text-center py-5">

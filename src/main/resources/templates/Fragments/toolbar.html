@@ -85,22 +85,6 @@
                     </a>
                 </div>
 
-
-                <div sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/login}" class="text-decoration-none text-dark">
-                        <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small" style="color: #4C1C04">Заказы</span>
-                    </a>
-                </div>
-
-                <div sec:authorize="isAuthenticated()">
-                    <a th:href="@{/profile/orders}" class="text-decoration-none text-dark">
-                        <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
-                        <span class="small" style="color: #4C1C04">Заказы</span>
-                    </a>
-                </div>
-
-
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">
                         <i class="fas fa-heart fa-lg" style="color: #B20000"></i><br>
@@ -115,6 +99,19 @@
                     </a>
                 </div>
 
+                <div sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" class="text-decoration-none text-dark">
+                        <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
+                        <span class="small" style="color: #4C1C04">Заказы</span>
+                    </a>
+                </div>
+
+                <div sec:authorize="isAuthenticated()">
+                    <a th:href="@{/profile/orders}" class="text-decoration-none text-dark">
+                        <i class="fas fa-box fa-lg" style="color: #4C1C04"></i><br>
+                        <span class="small" style="color: #4C1C04">Заказы</span>
+                    </a>
+                </div>
 
                 <div sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="text-decoration-none text-dark">

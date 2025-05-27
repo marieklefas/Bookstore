@@ -18,6 +18,7 @@
     }
 
     .list {
+      color: #4C1C04;
       max-height: 500px;
       overflow-y: auto;
     }
@@ -49,6 +50,31 @@
     }
     .back-btn:hover {
       background-color: #D5CDC5 !important;
+    }
+    /* Стилизация скроллбара */
+    .list::-webkit-scrollbar {
+      width: 8px;
+      background-color: #FFF4E2;
+    }
+
+    .list::-webkit-scrollbar-thumb {
+      background-color: #FFE4BA;
+      border-radius: 4px;
+    }
+
+    .list::-webkit-scrollbar-thumb:hover {
+      background-color: #4C1C04;
+    }
+
+    .list::-webkit-scrollbar-track {
+      background-color: #FFF4E2;
+      border-radius: 4px;
+    }
+    .item.border-bottom {
+      border-bottom-color: #E7C39C !important;
+    }
+    .form-label {
+      color: #4C1C04;
     }
   </style>
 </head>

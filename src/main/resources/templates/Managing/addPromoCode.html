@@ -62,6 +62,36 @@
         .back-btn:hover {
             background-color: #D5CDC5 !important;
         }
+        /* Стилизация скроллбара для списка промокодов */
+        .promo-list::-webkit-scrollbar {
+            width: 8px;
+            background-color: #FFF4E2;
+        }
+
+        .promo-list::-webkit-scrollbar-thumb {
+            background-color: #E7C39C;
+            border-radius: 4px;
+        }
+
+        .promo-list::-webkit-scrollbar-thumb:hover {
+            background-color: #4C1C04;
+        }
+
+        .promo-list::-webkit-scrollbar-track {
+            background-color: #FFF4E2;
+            border-radius: 4px;
+        }
+
+        /* Изменение цвета разделительной линии между промокодами */
+        .promo-item {
+            border-bottom: 1px solid #E7C39C !important;
+        }
+        .main-text {
+            color: #4C1C04 !important;
+        }
+        .lighter-text {
+            color: #6F5649 !important;
+        }
     </style>
 </head>
 <body style="background-color: #FFF4E2;">
@@ -96,14 +126,14 @@
                         <div th:each="promo : ${promoCodeRepository.findAllByOrderByEndDateDesc()}"
                              class="promo-item">
                             <div class="d-flex justify-content-between align-items-center">
-                                <strong th:text="${promo.code}"></strong>
+                                <strong class="main-text" th:text="${promo.code}"></strong>
                                 <span class="badge"
                                       th:classappend="${T(java.time.LocalDate).now().isAfter(promo.endDate)} ? 'badge-expired' : 'badge-active'">
                                     <span th:if="${T(java.time.LocalDate).now().isAfter(promo.endDate)}">Истёк</span>
                                     <span th:if="${!T(java.time.LocalDate).now().isAfter(promo.endDate)}">Активен</span>
                                 </span>
                             </div>
-                            <div class="promo-details mt-2">
+                            <div class="promo-details mt-2 lighter-text">
                                 <div>
                                     <span th:text="${promo.discountType == 'Процентное значение'} ?
                                           'Скидка: ' + ${promo.discountValue} + '%' :
@@ -117,7 +147,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div th:if="${promoCodeRepository.count() == 0}" class="text-muted p-2">
+                        <div th:if="${promoCodeRepository.count() == 0}" class="lighter-text p-2">
                             Нет добавленных промокодов
                         </div>
                     </div>
@@ -136,12 +166,12 @@
 
                     <form th:action="@{/managing/addpromocode}" method="post">
                         <div class="mb-3">
-                            <label class="form-label">Наименование промокода</label>
+                            <label class="form-label main-text">Наименование промокода</label>
                             <input type="text" class="form-control" name="name" th:value="${title}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Тип промокода</label>
+                            <label class="form-label main-text">Тип промокода</label>
                             <select name="type" class="form-select" required>
                                 <option value="" disabled selected hidden th:if="${type == null}">Выберите тип промокода</option>
                                 <option value="Фиксированное значение" th:selected="${type == 'Фиксированное значение'}">Фиксированное значение (в рублях)</option>
@@ -150,18 +180,18 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Значение</label>
+                            <label class="form-label main-text">Значение</label>
                             <input type="number" class="form-control" name="value" th:value="${discountValue}" required>
-                            <small class="form-text text-muted">Для процентов — от 1 до 100, для фиксированной суммы — любое положительное число</small>
+                            <small class="form-text lighter-text">Для процентов — от 1 до 100, для фиксированной суммы — любое положительное число</small>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Дата начала действия</label>
+                            <label class="form-label main-text">Дата начала действия</label>
                             <input type="date" class="form-control" name="startDate" th:value="${startDate}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Дата окончания действия</label>
+                            <label class="form-label main-text">Дата окончания действия</label>
                             <input type="date" class="form-control" name="endDate" th:value="${endDate}" required>
                         </div>
 
