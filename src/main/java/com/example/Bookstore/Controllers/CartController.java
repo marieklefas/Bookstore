@@ -16,12 +16,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Контроллер для управления корзиной покупок.
+ * Обеспечивает функционал добавления, изменения количества, удаления товаров из корзины,
+ * а также применение промокодов и оформление заказов.
+ */
 @Controller
 @RequestMapping("/cart")
 public class CartController {
@@ -33,6 +37,14 @@ public class CartController {
 
     private PromoCode activePromo;
 
+    /**
+     * Отображает страницу корзины с товарами пользователя.
+     * Рассчитывает общую стоимость, скидки и итоговую цену с учетом промокода.
+     *
+     * @param model Модель для передачи данных в представление
+     * @param principal Аутентифицированный пользователь
+     * @return Страница корзины или перенаправление на страницу входа, если пользователь не аутентифицирован
+     */
     @GetMapping("")
     public String cartPage(Model model, Principal principal) {
         if (principal == null) return "redirect:/login";
@@ -65,10 +77,17 @@ public class CartController {
         if (!model.containsAttribute("promoStatus")) model.addAttribute("promoStatus", null);
         if (!model.containsAttribute("promoCode")) model.addAttribute("promoCode", "");
 
-
         return "Profile/cart";
     }
 
+    /**
+     * Добавляет книгу в корзину пользователя.
+     * Увеличивает количество на 1, если книга уже есть в корзине.
+     *
+     * @param bookId ID книги для добавления
+     * @param principal Аутентифицированный пользователь
+     * @return ResponseEntity с HTTP статусом (200 OK при успехе, 401 UNAUTHORIZED если пользователь не аутентифицирован)
+     */
     @PostMapping("/cart-add/{bookId}")
     @ResponseBody
     public ResponseEntity<?> addToCart(@PathVariable Long bookId, Principal principal) {
@@ -88,12 +107,28 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Увеличивает количество книги в корзине на 1.
+     * Фактически вызывает метод addToCart().
+     *
+     * @param bookId ID книги
+     * @param principal Аутентифицированный пользователь
+     * @return ResponseEntity с HTTP статусом
+     */
     @PostMapping("/cart-increase/{bookId}")
     @ResponseBody
     public ResponseEntity<?> increaseCart(@PathVariable Long bookId, Principal principal) {
         return addToCart(bookId, principal);
     }
 
+    /**
+     * Уменьшает количество книги в корзине на 1.
+     * Удаляет книгу из корзины, если количество становится 0.
+     *
+     * @param bookId ID книги
+     * @param principal Аутентифицированный пользователь
+     * @return ResponseEntity с HTTP статусом (200 OK при успехе, 401 UNAUTHORIZED если пользователь не аутентифицирован)
+     */
     @PostMapping("/cart-decrease/{bookId}")
     @ResponseBody
     public ResponseEntity<?> decreaseCart(@PathVariable Long bookId, Principal principal) {
@@ -113,6 +148,13 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Полностью удаляет книгу из корзины пользователя.
+     *
+     * @param id ID книги для удаления
+     * @param principal Аутентифицированный пользователь
+     * @return Перенаправление на страницу корзины или на страницу входа, если пользователь не аутентифицирован
+     */
     @Transactional
     @PostMapping("/cart-remove/{id}")
     public String removeFromCart(@PathVariable Long id, Principal principal) {
@@ -126,6 +168,12 @@ public class CartController {
         return "redirect:/cart";
     }
 
+    /**
+     * Очищает всю корзину пользователя.
+     *
+     * @param principal Аутентифицированный пользователь
+     * @return Перенаправление на страницу корзины или на страницу входа, если пользователь не аутентифицирован
+     */
     @Transactional
     @PostMapping("/cart-clear")
     public String clearCart(Principal principal) {
@@ -135,6 +183,15 @@ public class CartController {
         return "redirect:/cart";
     }
 
+    /**
+     * Применяет промокод к корзине пользователя.
+     * Проверяет валидность и срок действия промокода.
+     *
+     * @param promoCode Введенный промокод
+     * @param model Модель для передачи статуса промокода
+     * @param principal Аутентифицированный пользователь
+     * @return Обновленная страница корзины с информацией о применении промокода
+     */
     @PostMapping("/apply-promocode")
     public String applyPromocode(@RequestParam String promoCode, Model model, Principal principal) {
         String promoStatus;
@@ -160,6 +217,13 @@ public class CartController {
         return cartPage(model, principal);
     }
 
+    /**
+     * Оформляет заказ из товаров в корзине.
+     * Создает заказ, очищает корзину и сбрасывает активный промокод.
+     *
+     * @param principal Аутентифицированный пользователь
+     * @return Перенаправление на страницу заказов пользователя
+     */
     @Transactional
     @PostMapping("/placeorder")
     public String checkout(Principal principal) {

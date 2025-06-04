@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Сущность, представляющая жанр книги в системе.
+ * Связана отношением многие-ко-многим с сущностью Book.
+ */
 @Entity
 @Table(name = "Genres")
 public class Genre {

@@ -62,10 +62,8 @@
 <div th:insert="~{Fragments/toolbar :: toolbar}"></div>
 
 <div class="d-flex">
-    <!-- Боковое меню -->
     <div th:replace="~{Fragments/sidebar :: sidebar('profile')}"></div>
 
-    <!-- Основной контент -->
     <div class="flex-grow-1 p-4">
         <div class="welcome-section p-4 mb-4">
             <div class="d-flex align-items-center">
@@ -129,7 +127,6 @@
             </div>
         </div>
 
-        <!-- Статистика по избранным книгам -->
         <div class="stats-section">
             <h3 class="section-title">Ваши предпочтения в книгах</h3>
 
@@ -140,7 +137,6 @@
 
             <div th:if="!${genreCounts.isEmpty() && tagCounts.isEmpty() && authorCounts.isEmpty() && languageCounts.isEmpty() && coverTypeCounts.isEmpty()}">
                 <div class="row">
-                    <!-- Жанры -->
                     <div class="col-md-6 mb-4">
                         <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -154,7 +150,6 @@
                         </div>
                     </div>
 
-                    <!-- Теги -->
                     <div class="col-md-6 mb-4">
                         <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -168,7 +163,6 @@
                         </div>
                     </div>
 
-                    <!-- Авторы -->
                     <div class="col-md-6 mb-4">
                         <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -182,7 +176,6 @@
                         </div>
                     </div>
 
-                    <!-- Языки -->
                     <div class="col-md-6 mb-4">
                         <div class="card h-100 shadow-sm border-0" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -196,7 +189,6 @@
                         </div>
                     </div>
 
-                    <!-- Типы переплета -->
                     <div class="col-12 mb-4">
                         <div class="card shadow-sm border-0" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -221,7 +213,6 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
 
-    // Функция для генерации случайных цветов
     function getRandomColors(count) {
         const colors = [];
         for (let i = 0; i < count; i++) {
@@ -231,7 +222,6 @@
         return colors;
     }
 
-    // Жанры
     const genreData = {
         labels: /*[[${genreCounts.keySet()}]]*/ [],
         datasets: [{
@@ -241,7 +231,6 @@
         }]
     };
 
-    // Теги
     const tagData = {
         labels: /*[[${tagCounts.keySet()}]]*/ [],
         datasets: [{
@@ -251,7 +240,6 @@
         }]
     };
 
-    // Авторы
     const authorData = {
         labels: /*[[${authorCounts.keySet()}]]*/ [],
         datasets: [{
@@ -261,7 +249,6 @@
         }]
     };
 
-    // Языки
     const languageData = {
         labels: /*[[${languageCounts.keySet()}]]*/ [],
         datasets: [{
@@ -271,7 +258,6 @@
         }]
     };
 
-    // Типы переплета
     const coverTypeData = {
         labels: /*[[${coverTypeCounts.keySet()}]]*/ [],
         datasets: [{
@@ -283,9 +269,7 @@
         }]
     };
 
-    // Инициализация всех диаграмм после загрузки страницы
     document.addEventListener('DOMContentLoaded', function() {
-        // Круговые диаграммы
         new Chart(document.getElementById('genreChart'), {
             type: 'doughnut',
             data: genreData,
@@ -342,7 +326,6 @@
             }
         });
 
-        // Столбчатая диаграмма
         new Chart(document.getElementById('coverTypeChart'), {
             type: 'bar',
             data: coverTypeData,

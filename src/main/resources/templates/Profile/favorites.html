@@ -91,7 +91,6 @@
 
         <div class="card-body p-2 pt-0">
           <div class="d-flex justify-content-between">
-            <!-- Кнопка Купить / -1+ -->
             <div class="d-flex align-items-center">
               <form th:if="${#authorization.expression('isAuthenticated()')}"
                     th:action="@{/cart/cart-add/{id}(id=${book.id})}"
@@ -105,7 +104,6 @@
                 </button>
               </form>
 
-              <!-- Если книга уже в корзине, показываем интерфейс - количество + -->
               <div th:if="${#authorization.expression('isAuthenticated()') and book.cartItems.?[user.username == #authentication.name].size() > 0}"
                    class="input-group me-2" style="width: 120px;">
                 <div class="d-flex border rounded" style="border-color: #E7C39C !important;">
@@ -135,7 +133,6 @@
                 </div>
               </div>
 
-              <!-- Если неавторизован — кнопка ведет на login -->
               <form th:if="${!#authorization.expression('isAuthenticated()')}" onsubmit="window.location.href='/login'; return false;" class="me-2">
                 <button type="submit"
                         class="btn custom-btn"
@@ -145,7 +142,6 @@
               </form>
             </div>
 
-            <!-- Форма для избранного -->
             <div class="d-flex align-items-center">
               <form th:if="${#authorization.expression('isAuthenticated()')}"
                     th:action="@{/profile/toggle-favorite/{id}(id=${book.id})}"
@@ -175,18 +171,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {
-    // Обработка добавления в корзину
     $('.add-to-cart-form').on('submit', function(e) {
       e.preventDefault();
       const form = $(this);
       $.post(form.attr('action'), form.serialize(), function() {
-        // Обновляем только нужные элементы на странице
-        location.reload(); // Временное решение - потом можно сделать более точечное обновление
+        location.reload();
       });
       return false;
     });
 
-    // Обработка увеличения количества
     $('.increase-cart-form').on('submit', function(e) {
       e.preventDefault();
       const form = $(this);
@@ -196,7 +189,6 @@
       return false;
     });
 
-    // Обработка уменьшения количества
     $('.decrease-cart-form').on('submit', function(e) {
       e.preventDefault();
       const form = $(this);
@@ -206,7 +198,6 @@
       return false;
     });
 
-    // Обработка добавления в избранное
     $('.toggle-favorite-form').on('submit', function(e) {
       e.preventDefault();
       const form = $(this);

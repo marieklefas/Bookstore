@@ -1,10 +1,13 @@
 package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Сущность, представляющая издателя книг.
+ * Хранит информацию об издателе и связанных с ним книгах.
+ */
 @Entity
 @Table(name = "Publishers")
 public class Publisher {

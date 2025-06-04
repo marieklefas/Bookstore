@@ -40,7 +40,6 @@
         </div>
 
         <div th:if="!${#lists.isEmpty(activeOrders) && #lists.isEmpty(completedOrders)}">
-            <!-- Активные заказы -->
             <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
                 <h2 class="h5 mb-0 main-text">Активные заказы</h2>
                 <span class="lighter-text">Количество: <span th:text="${activeOrders.size()}">0</span></span>
@@ -70,7 +69,6 @@
                 </div>
             </div>
 
-            <!-- Завершённые заказы -->
             <div class="d-flex justify-content-between align-items-center mt-5 mb-2">
                 <h2 class="h5 mb-0 main-text">Завершённые заказы</h2>
                 <span class="lighter-text">Количество: <span th:text="${completedOrders.size()}">0</span></span>

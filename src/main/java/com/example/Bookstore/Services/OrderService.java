@@ -2,38 +2,32 @@ package com.example.Bookstore.Services;
 
 import com.example.Bookstore.DataBases.*;
 import com.example.Bookstore.Repositories.BookRepository;
-import com.example.Bookstore.Repositories.OrderItemRepository;
 import com.example.Bookstore.Repositories.OrderRepository;
 import com.example.Bookstore.Repositories.UserCartItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сервис для работы с заказами.
+ * Обеспечивает создание заказов, управление их статусами и взаимодействие с корзиной пользователя.
+ */
 @Service
 public class OrderService {
     @Autowired private OrderRepository orderRepository;
     @Autowired private BookRepository bookRepository;
     @Autowired private UserCartItemRepository userCartItemRepository;
-    @Autowired private OrderItemRepository orderItemRepository;
 
-    @Scheduled(cron = "0 0 * * * *") // каждый час
-    public void updateOrderStatuses() {
-        List<Order> activeOrders = orderRepository.findByStatus("Заказ активен");
-        LocalDateTime now = LocalDateTime.now();
-
-        for (Order order : activeOrders) {
-            if (order.getOrderDate().plusDays(2).isBefore(now)) {
-                order.setStatus("Завершен");
-                orderRepository.save(order);
-            }
-        }
-    }
-
+    /**
+     * Создает новый заказ из содержимого корзины пользователя.
+     *
+     * @param user Пользователь, оформляющий заказ
+     * @param promoCode Применяемый промокод (может быть null)
+     * @throws IllegalStateException если корзина пуста или недостаточно товаров в наличии
+     */
     public void createOrderFromCart(User user, PromoCode promoCode) {
         List<UserCartItem> cartItems  = userCartItemRepository.findByUserOrderByBookAsc(user);
         if (cartItems.isEmpty()) return;

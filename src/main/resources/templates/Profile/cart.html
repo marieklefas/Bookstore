@@ -17,9 +17,9 @@
         }
 
         .promocode {
-            background-color: #FFF4E2 !important;  /* Цвет фона, как у основного фона */
-            border: 1px solid #E7C39C !important; /* Граница в тон кнопкам */
-            color: #4C1C04 !important;            /* Цвет текста */
+            background-color: #FFF4E2 !important;
+            border: 1px solid #E7C39C !important;
+            color: #4C1C04 !important;
         }
 
         .custom-btn {
@@ -93,14 +93,12 @@
                 <div class="list-group">
                     <div class="list-group-item mb-3 border-0 shadow-sm" style="background-color: #FFF4E2;" th:each="item : ${cartItems}">
                         <div class="row align-items-center">
-                            <!-- Обложка -->
                             <div class="col-2">
                                 <a th:href="@{/books/{id}(id=${item.book.id})}" style="text-decoration: none; color: inherit;">
                                     <img th:src="@{${item.book.coverImg}}" class="img-fluid" alt="Обложка" style="max-height: 150px; background-color: #FFF4E2;">
                                 </a>
                             </div>
 
-                            <!-- Название и автор -->
                             <div class="col-3">
                                 <a th:href="@{/books/{id}(id=${item.book.id})}" style="text-decoration: none; color: inherit;">
                                     <h5 class="main-text" th:text="${item.book.title}">Название</h5>
@@ -114,7 +112,6 @@
                                 </a>
                             </div>
 
-                            <!-- Кнопки +/- -->
                             <div class="col-3">
                                 <div class="input-group mb-2" style="width: 120px;">
                                     <div class="d-flex border rounded" style="border-color: #E7C39C !important;">
@@ -149,12 +146,10 @@
                                 </div>
                             </div>
 
-                            <!-- Общая цена -->
                             <div class="col-2 main-text">
                                 <h5 th:text="${item.book.price * item.quantity} + ' ₽'"></h5>
                             </div>
 
-                            <!-- Кнопки действий -->
                             <div class="col-2 d-flex flex-column gap-2">
                                 <form th:action="@{/profile/toggle-favorite/{id}(id=${item.book.id})}"
                                       method="post"
@@ -223,18 +218,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Обработка добавления в корзину
         $('.add-to-cart-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
             $.post(form.attr('action'), form.serialize(), function() {
-                // Обновляем только нужные элементы на странице
-                location.reload(); // Временное решение - потом можно сделать более точечное обновление
+                location.reload();
             });
             return false;
         });
 
-        // Обработка увеличения количества
         $('.increase-cart-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
@@ -244,7 +236,6 @@
             return false;
         });
 
-        // Обработка уменьшения количества
         $('.decrease-cart-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
@@ -254,7 +245,6 @@
             return false;
         });
 
-        // Обработка добавления в избранное
         $('.toggle-favorite-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);

@@ -23,38 +23,32 @@
             color: #4C1C04;
         }
 
-        /* Стили для полей ввода и select */
         .form-control, .form-select, form-select select2, .select2-container--default .select2-selection--multiple {
-            background-color: #FFF4E2 !important;  /* Цвет фона, как у основного фона */
-            border: 1px solid #E7C39C !important; /* Граница в тон кнопкам */
-            color: #4C1C04 !important;            /* Цвет текста */
+            background-color: #FFF4E2 !important;
+            border: 1px solid #E7C39C !important;
+            color: #4C1C04 !important;
         }
 
-        /* Стили для выбранных элементов в Select2 (теги) */
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
             background-color: #E7C39C !important;
             border: 1px solid #D4A76A !important;
             color: #4C1C04 !important;
         }
 
-        /* Стили для крестика удаления тега */
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
             color: #4C1C04 !important;
         }
 
-        /* Стиль для выпадающего списка Select2 */
         .select2-dropdown {
             background-color: #FFF4E2 !important;
             border: 1px solid #E7C39C !important;
         }
 
-        /* Стиль для элементов в выпадающем списке */
         .select2-results__option {
             background-color: #FFF4E2 !important;
             color: #4C1C04 !important;
         }
 
-        /* Стиль при наведении на элемент в выпадающем списке */
         .select2-results__option--highlighted {
             background-color: #E7C39C !important;
             color: #4C1C04 !important;
@@ -77,7 +71,6 @@
             background-color: #D5CDC5 !important;
         }
 
-        /* Стили для переключателя вкладок */
         .btn-group .btn {
             flex: 1;
             border-radius: 0;
@@ -118,7 +111,6 @@
 
     <form th:action="@{/managing/addbook}" method="post" enctype="multipart/form-data">
         <div class="row">
-            <!-- Обложка книги -->
             <div class="col-md-4 mb-4">
                 <div class="card border-0 shadow-sm" style="background-color: #FFF4E2;">
                     <img th:src="@{${book.coverImg}}" id="coverPreview" class="img-fluid rounded mb-3" alt="Обложка книги" style="max-height: 500px; object-fit: contain;">
@@ -142,14 +134,12 @@
                 </div>
             </div>
 
-            <!-- Информация о книге -->
             <div class="col-md-8">
                 <div class="form-group mb-3">
                     <label class="form-label">Название книги</label>
                     <input type="text" class="form-control" id="title" name="title" th:value="${book.title}" required>
                 </div>
 
-                <!-- Авторы -->
                 <div class="form-group mb-3">
                     <label class="form-label">Авторы</label>
                     <select name="authorIds" multiple class="form-select select2-multiple" data-placeholder="Выберите автора" required>
@@ -161,7 +151,6 @@
                     </select>
                 </div>
 
-                <!-- Цена и количество -->
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -177,7 +166,6 @@
                     </div>
                 </div>
 
-                <!-- Основная информация -->
                 <div class="card mb-4 border-0 shadow-sm" style="background-color: #FFF4E2;">
                     <div class="card-body">
                         <h5 class="card-title">О книге</h5>
@@ -240,7 +228,6 @@
                     </div>
                 </div>
 
-                <!-- Жанры и теги -->
                 <div class="form-group mb-4">
                     <label class="form-label">Жанры</label>
                     <select name="genreIds" multiple class="form-select select2-multiple" data-placeholder="Выберите жанры" required>
@@ -339,7 +326,6 @@
         }
     });
 
-    // Предпросмотр изображения при выборе новой обложки
     function previewImage(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -352,21 +338,16 @@
 
     function previewImageFromUrl(url) {
         if (!url) {
-            // Если URL пуст, показываем placeholder или скрываем изображение
-            document.getElementById('coverPreview').src = '/images/default-book-cover.jpg'; // или другой placeholder
+            document.getElementById('coverPreview').src = '/images/default-book-cover.jpg';
             return;
         }
 
-        // Проверяем, похож ли ввод на URL изображения
         if (url.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i)) {
-            // Создаем новое изображение для проверки
             const img = new Image();
             img.onload = function() {
-                // Если изображение загрузилось успешно, показываем его
                 document.getElementById('coverPreview').src = url;
             };
             img.onerror = function() {
-                // Если изображение не загрузилось, показываем placeholder
                 document.getElementById('coverPreview').src = '/images/default-book-cover.jpg';
             };
             img.src = url;

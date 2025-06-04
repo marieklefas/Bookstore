@@ -2,6 +2,10 @@ package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
 
+/**
+ * Сущность, представляющая элемент корзины пользователя.
+ * Связывает пользователя, книгу и количество единиц в корзине.
+ */
 @Entity
 @Table(name = "user_cart_items")
 public class UserCartItem {

@@ -11,7 +11,7 @@
         .section-title {
             font-size: 1.5rem;
             margin-bottom: 20px;
-            color: #333;
+            color: #4C1C04;
             border-bottom: 1px solid #E7C39C;
             padding-bottom: 10px;
         }
@@ -67,50 +67,42 @@
             background-color: #D5CDC5 !important;
         }
 
-        /* Стили для полей ввода и select */
         .form-control, .filter-select .select2-selection, .select2-container--default .select2-selection--multiple {
-            background-color: #FFF4E2 !important;  /* Цвет фона, как у основного фона */
-            border: 1px solid #E7C39C !important; /* Граница в тон кнопкам */
-            color: #4C1C04 !important;            /* Цвет текста */
+            background-color: #FFF4E2 !important;
+            border: 1px solid #E7C39C !important;
+            color: #4C1C04 !important;
         }
 
-        /* Стили для выбранных элементов в Select2 (теги) */
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
             background-color: #E7C39C !important;
             border: 1px solid #D4A76A !important;
             color: #4C1C04 !important;
         }
 
-        /* Стили для крестика удаления тега */
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
             color: #4C1C04 !important;
         }
 
-        /* Стиль для выпадающего списка Select2 */
         .select2-dropdown {
             background-color: #FFF4E2 !important;
             border: 1px solid #E7C39C !important;
         }
 
-        /* Стиль для элементов в выпадающем списке */
         .select2-results__option {
             background-color: #FFF4E2 !important;
             color: #4C1C04 !important;
         }
 
-        /* Стиль при наведении на элемент в выпадающем списке */
         .select2-results__option--highlighted {
             background-color: #E7C39C !important;
             color: #4C1C04 !important;
         }
 
-        /* Стиль для чекбоксов */
         .form-check-input {
             background-color: #FFF4E2;
             border: 1px solid #E7C39C;
         }
 
-        /* Стиль для активного чекбокса */
         .form-check-input:checked {
             background-color: #E7C39C;
             border-color: #E7C39C;
@@ -159,7 +151,6 @@
                 </div>
             </div>
 
-            <!-- Фильтры -->
             <div class="filter-section">
                 <h5>Авторы</h5>
                 <select class="form-control filter-select" multiple="multiple" id="authors" data-placeholder="Выберите авторов">
@@ -290,7 +281,6 @@
 
                     <div class="card-body p-2 pt-0">
                         <div class="d-flex justify-content-between">
-                            <!-- Кнопка Купить / -1+ -->
                             <div class="d-flex align-items-center">
                                 <form th:if="${#authorization.expression('isAuthenticated()')}"
                                       th:action="@{/cart/cart-add/{id}(id=${book.id})}"
@@ -304,7 +294,6 @@
                                     </button>
                                 </form>
 
-                                <!-- Если книга уже в корзине, показываем интерфейс - количество + -->
                                 <div th:if="${#authorization.expression('isAuthenticated()') and book.cartItems.?[user.username == #authentication.name].size() > 0}"
                                      class="input-group me-2" style="width: 120px;">
                                     <div class="d-flex border rounded" style="border-color: #E7C39C !important;">
@@ -319,7 +308,7 @@
 
                                         <input type="text"
                                                class="form-control text-center border-0"
-                                               style="background-color: #FFF4E2; color: #4C1C04;"
+                                               style="background-color: #FFF4E2; color: #4C1C04; border: transparent !important;"
                                                th:value="${book.getUserCartCount(#authentication.name)}"
                                                readonly>
 
@@ -334,8 +323,8 @@
                                     </div>
                                 </div>
 
-                                <!-- Если неавторизован — кнопка ведет на login -->
-                                <form th:if="${!#authorization.expression('isAuthenticated()')}" onsubmit="window.location.href='/login'; return false;" class="me-2">
+                                <form th:if="${!#authorization.expression('isAuthenticated()')}"
+                                      onsubmit="window.location.href='/login'; return false;" class="me-2">
                                     <button type="submit"
                                             class="btn custom-btn"
                                             style="width: 120px; height: 38px;">
@@ -344,7 +333,6 @@
                                 </form>
                             </div>
 
-                            <!-- Форма для избранного -->
                             <div class="d-flex align-items-center">
                                 <form th:if="${#authorization.expression('isAuthenticated()')}"
                                       th:action="@{/profile/toggle-favorite/{id}(id=${book.id})}"
@@ -378,18 +366,15 @@
 <script src="https://cdn.jsdelivr.net/npm/nouislider@15.5.1/dist/nouislider.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Обработка добавления в корзину
         $('.add-to-cart-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
             $.post(form.attr('action'), form.serialize(), function() {
-                // Обновляем только нужные элементы на странице
-                location.reload(); // Временное решение - потом можно сделать более точечное обновление
+                location.reload();
             });
             return false;
         });
 
-        // Обработка увеличения количества
         $('.increase-cart-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
@@ -399,7 +384,6 @@
             return false;
         });
 
-        // Обработка уменьшения количества
         $('.decrease-cart-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
@@ -409,7 +393,6 @@
             return false;
         });
 
-        // Обработка добавления в избранное
         $('.toggle-favorite-form').on('submit', function(e) {
             e.preventDefault();
             const form = $(this);
@@ -419,7 +402,6 @@
             return false;
         });
 
-        // Инициализация Select2 для множественного выбора
         $('.filter-select').each(function () {
             const $select = $(this);
             const id = $select.attr('id');
@@ -441,7 +423,6 @@
                         .attr('data-id', item.id)
                         .html(`${item.text} <span class="ms-1" style="font-weight:bold;">×</span>`);
 
-                    // Удаление при клике
                     badge.on('click', function () {
                         const idToRemove = $(this).attr('data-id');
                         let currentValues = $select.val() || [];
@@ -457,9 +438,7 @@
             updateSelectedDisplay();
         });
 
-        // Обработчики для других фильтров
         $('.filter-select, .cover-type-check, .age-limit-check, #min-year, #max-year, #min-price, #max-price').on('change', applyFilters);
-        // $('.cover-type-check, .age-limit-check').on('change', applyFilters);
     });
 
     function applyFilters() {
@@ -475,7 +454,6 @@
             params.append('inStock', 'true');
         }
 
-        // Собираем параметры из всех фильтров
         const authors = $('#authors').val();
         if (authors && authors.length > 0) {
             authors.forEach(author => params.append('authors', author));
@@ -527,7 +505,6 @@
             ageLimits.forEach(limit => params.append('ageLimits', limit));
         }
 
-        // Обновляем URL без перезагрузки страницы
         history.pushState(null, '', '/catalog?' + params.toString());
 
         $.ajax({
@@ -551,7 +528,6 @@
     }
 
     function resetAllFilters() {
-        // Сбрасываем все фильтры
         $('.filter-select').val(null).trigger('change');
         $('.cover-type-check, .age-limit-check').prop('checked', false);
         $('#sort-by').val('');

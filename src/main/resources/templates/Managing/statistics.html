@@ -64,7 +64,6 @@
 
 <div class="container mt-4">
     <div class="d-flex">
-        <!-- Основной контент -->
         <div class="flex-grow-1 p-4">
             <div class="mb-4">
                 <a th:href="@{/managing}" class="btn back-btn">
@@ -76,7 +75,6 @@
                 <h1 class="h3 mb-0 section-title">Статистика магазина</h1>
             </div>
 
-            <!-- Основные показатели -->
             <div class="row mb-4">
                 <div class="col-md-4 mb-3">
                     <div class="stat-card h-100 p-3 border-0" style="background-color: #FFF4E2;">
@@ -121,10 +119,8 @@
                 </div>
             </div>
 
-            <!-- Первый ряд диаграмм -->
             <div class="stats-section mb-4">
                 <div class="row">
-                    <!-- Самые популярные книги -->
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -138,7 +134,6 @@
                         </div>
                     </div>
 
-                    <!-- Продажи по жанрам -->
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -152,7 +147,6 @@
                         </div>
                     </div>
 
-                    <!-- Продажи по авторам -->
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -168,10 +162,8 @@
                 </div>
             </div>
 
-            <!-- Второй ряд диаграмм -->
             <div class="stats-section mb-4">
                 <div class="row">
-                    <!-- Динамика продаж -->
                     <div class="col-md-6 mb-4">
                         <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -185,7 +177,6 @@
                         </div>
                     </div>
 
-                    <!-- Использование промокодов -->
                     <div class="col-md-6 mb-4">
                         <div class="card h-100 border-0 shadow-sm" style="background-color: #FFF4E2;">
                             <div class="card-body">
@@ -209,7 +200,6 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
 
-    // Функция для генерации случайных цветов
     function getRandomColors(count) {
         const colors = [];
         for (let i = 0; i < count; i++) {
@@ -219,7 +209,6 @@
         return colors;
     }
 
-    // Топ продаж книг
     const topBooksData = {
         labels: /*[[${topBooks.keySet()}]]*/ [],
         datasets: [{
@@ -229,7 +218,6 @@
         }]
     };
 
-    // Продажи по жанрам
     const genresData = {
         labels: /*[[${genresStats.keySet()}]]*/ [],
         datasets: [{
@@ -239,7 +227,6 @@
         }]
     };
 
-    // Продажи по авторам
     const authorsData = {
         labels: /*[[${authorsStats.keySet()}]]*/ [],
         datasets: [{
@@ -249,7 +236,6 @@
         }]
     };
 
-    // Динамика продаж
     const salesTrendData = {
         labels: /*[[${salesTrend.keySet()}]]*/ [],
         datasets: [{
@@ -263,7 +249,6 @@
         }]
     };
 
-    // Использование промокодов
     const promoCodesData = {
         labels: /*[[${promoCodesUsage.keySet()}]]*/ [],
         datasets: [{
@@ -275,9 +260,7 @@
         }]
     };
 
-    // Инициализация всех диаграмм после загрузки страницы
     document.addEventListener('DOMContentLoaded', function() {
-        // Топ продаж книг (горизонтальная бар-диаграмма)
         new Chart(document.getElementById('topBooksChart'), {
             type: 'bar',
             data: topBooksData,
@@ -298,7 +281,6 @@
             }
         });
 
-        // Продажи по жанрам (круговая диаграмма)
         new Chart(document.getElementById('genresChart'), {
             type: 'doughnut',
             data: genresData,
@@ -313,7 +295,6 @@
             }
         });
 
-        // Продажи по авторам (круговая диаграмма)
         new Chart(document.getElementById('authorsChart'), {
             type: 'doughnut',
             data: authorsData,
@@ -328,7 +309,6 @@
             }
         });
 
-        // Динамика продаж (линейный график)
         new Chart(document.getElementById('salesTrendChart'), {
             type: 'line',
             data: salesTrendData,
@@ -343,7 +323,6 @@
             }
         });
 
-        // Использование промокодов (столбчатая диаграмма)
         new Chart(document.getElementById('promoCodesChart'), {
             type: 'bar',
             data: promoCodesData,

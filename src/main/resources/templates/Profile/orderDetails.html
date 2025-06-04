@@ -37,14 +37,12 @@
     <div th:replace="~{Fragments/sidebar :: sidebar('orders')}"></div>
 
     <main class="flex-grow-1 p-4">
-        <!-- Кнопка назад вверху -->
         <div class="mb-3">
             <a th:href="@{/profile/orders}" class="btn back-btn">
                 <i class="fas fa-arrow-left me-1"></i> Назад к заказам
             </a>
         </div>
 
-        <!-- Заголовок заказа -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h4 mb-0 section-title">Заказ №<span th:text="${order.id}">123</span></h1>
             <span class="badge" style="background-color: #EDAD69; color: #4C1C04" th:text="${order.status}"></span>
@@ -52,22 +50,18 @@
 
         <p class="mb-4 lighter-text">Оформлен: <span th:text="${#temporals.format(order.orderDate, 'd MMMM yyyy')}"></span></p>
 
-        <!-- Список книг в заказе -->
         <div class="mb-4">
-            <!-- Заголовки колонок -->
             <div class="row fw-bold text-muted small mb-2 px-3">
-                <div class="col-2"></div> <!-- Пустое место для обложки -->
+                <div class="col-2"></div>
                 <div class="col-4"></div>
                 <div class="col-2 main-text">Цена за шт.</div>
                 <div class="col-2 main-text">Кол-во</div>
                 <div class="col-2 text-end main-text">Сумма</div>
             </div>
 
-            <!-- Книги -->
             <div class="list-group">
                 <div class="list-group-item mb-3 border-0 shadow-sm" style="background-color: #FFF4E2;" th:each="item : ${order.items}">
                     <div class="row align-items-center">
-                        <!-- Обложка -->
                         <div class="col-2">
                             <a th:href="@{/books/{id}(id=${item.book.id})}">
                                 <img th:src="${item.book.coverImg}" alt="Обложка"
@@ -75,7 +69,6 @@
                             </a>
                         </div>
 
-                        <!-- Название и автор -->
                         <div class="col-4">
                             <a th:href="@{/books/{id}(id=${item.book.id})}" class="text-decoration-none">
                                 <h5 class="mb-1 main-text" th:text="${item.book.title}"></h5>
@@ -88,17 +81,14 @@
                             </a>
                         </div>
 
-                        <!-- Цена за штуку -->
                         <div class="col-2 main-text">
                             <span th:text="${item.book.price + '₽'}"></span>
                         </div>
 
-                        <!-- Количество -->
                         <div class="col-2 main-text">
                             <span th:text="${item.quantity}"></span>
                         </div>
 
-                        <!-- Сумма -->
                         <div class="col-2 text-end">
                             <span class="fw-bold main-text" th:text="${item.book.price * item.quantity + '₽'}"></span>
                         </div>
@@ -107,7 +97,6 @@
             </div>
         </div>
 
-        <!-- Итоговая информация -->
         <div class="d-flex justify-content-end">
             <div class="text-end main-text" style="min-width: 300px;">
                 <p>Общая сумма заказа: <strong th:text="${order.totalPrice + '₽'}"></strong></p>

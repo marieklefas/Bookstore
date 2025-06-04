@@ -157,7 +157,6 @@
 
 <script>
     $(document).ready(function() {
-        // Функция фильтрации заказов
         function filterOrders() {
             const searchTerm = $('#searchInput').val().toLowerCase();
             const statusFilter = $('#statusFilter').val();
@@ -183,7 +182,6 @@
             filterOrders();
         }
 
-        // Обработчики событий
         $('#searchInput').on('input', filterOrders);
         $('#statusFilter').change(filterOrders);
         $('#clearFilters').click(clearFilters);

@@ -1,10 +1,13 @@
 package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Сущность, представляющая язык публикации книги.
+ * Связана отношением один-ко-многим с сущностью Book.
+ */
 @Entity
 @Table(name = "Languages")
 public class Language {

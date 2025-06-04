@@ -2,14 +2,14 @@ package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
 
+/**
+ * Сущность, представляющая позицию в заказе.
+ * Содержит информацию о книге, количестве, цене за единицу и связи с заказом.
+ */
 @Entity
 @Table(name = "Order_items")
 public class OrderItems {
     public OrderItems() {}
-
-    public OrderItems(Integer quantity) {
-        this.quantity = quantity;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

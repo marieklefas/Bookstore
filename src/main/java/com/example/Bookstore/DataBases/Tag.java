@@ -1,10 +1,13 @@
 package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Сущность, представляющая тег для категоризации книг.
+ * Позволяет группировать книги по тематическим меткам.
+ */
 @Entity
 @Table(name = "Tags")
 public class Tag {

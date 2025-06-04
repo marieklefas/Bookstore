@@ -2,25 +2,25 @@ package com.example.Bookstore.Controllers;
 
 import com.example.Bookstore.DataBases.*;
 import com.example.Bookstore.Repositories.*;
-import com.example.Bookstore.Services.BookService;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Join;
-
 import java.util.*;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Контроллер для обработки запросов главного меню и навигации.
+ * Обеспечивает отображение главной страницы, каталога, поиска и других разделов.
+ */
 @Controller
 public class ToolbarController {
     @Autowired private BookRepository bookRepository;
@@ -30,13 +30,22 @@ public class ToolbarController {
     @Autowired private LanguageRepository languageRepository;
     @Autowired private PublisherRepository publisherRepository;
 
-    @Autowired private BookService bookService;
-
+    /**
+     * Перенаправляет запрос с корневого URL на главную страницу.
+     *
+     * @return Перенаправление на /home
+     */
     @GetMapping("/")
     public String startPage() {
         return "redirect:/home";
     }
 
+    /**
+     * Отображает главную страницу с подборкой книг по тегам.
+     *
+     * @param model Модель для передачи данных в представление
+     * @return Главная страница
+     */
     @GetMapping("/home")
     public String showMainPage(Model model) {
         List<Tag> allTags = tagRepository.findAll();
@@ -45,7 +54,7 @@ public class ToolbarController {
         for (Tag tag : allTags) {
             List<Book> books = tag.getBooks().stream()
                     .filter(book -> "Активна".equals(book.getStatus()))
-                    .sorted(Comparator.comparing(Book::getTitle)) // сортировка по названию
+                    .sorted(Comparator.comparing(Book::getTitle))
                     .limit(6)
                     .toList();
             if (!books.isEmpty()) {
@@ -57,31 +66,76 @@ public class ToolbarController {
         return "Toolbar/mainPage";
     }
 
+    /**
+     * Отображает страницу с информацией о местоположении магазина.
+     *
+     * @return Страница местоположения
+     */
     @GetMapping("/location")
     public String cityPage() {
         return "Toolbar/location";
     }
 
+    /**
+     * Отображает страницу с информацией о магазинах.
+     *
+     * @return Страница информации о магазинах
+     */
     @GetMapping("/stores")
     public String storesPage() {
         return "Toolbar/storesInfo";
     }
 
+    /**
+     * Отображает страницу с информацией о доставке и оплате.
+     *
+     * @return Страница доставки и оплаты
+     */
     @GetMapping("/deliveryAndPaymentInfo")
     public String dandpPage() {
         return "Toolbar/deliveryAndPaymentInfo";
     }
 
+    /**
+     * Отображает страницу управления книгами (для администраторов).
+     *
+     * @return Страница управления
+     */
     @GetMapping("/managing")
     public String managingBooksPage() {
         return "Managing/managing";
     }
 
+    /**
+     * Отображает страницу "Об авторе".
+     *
+     * @return Страница об авторе
+     */
     @GetMapping("/aboutAuthor")
     public String aboutPage() {
         return "Toolbar/aboutAuthor";
     }
 
+    /**
+     * Отображает страницу каталога с возможностью фильтрации и сортировки книг.
+     *
+     * @param sortBy Способ сортировки (price_asc, price_desc, popular)
+     * @param inStock Флаг наличия товара
+     * @param tag ID тега для фильтрации
+     * @param authors Список ID авторов для фильтрации
+     * @param genres Список ID жанров для фильтрации
+     * @param tags Список ID тегов для фильтрации
+     * @param languages Список ID языков для фильтрации
+     * @param publishers Список ID издателей для фильтрации
+     * @param coverTypes Список типов обложки для фильтрации
+     * @param ageLimits Список возрастных ограничений для фильтрации
+     * @param minYear Минимальный год издания
+     * @param maxYear Максимальный год издания
+     * @param minPrice Минимальная цена
+     * @param maxPrice Максимальная цена
+     * @param model Модель для передачи данных в представление
+     * @return Страница каталога
+     */
     @GetMapping("/catalog")
     public String catalogPage(
             @RequestParam(required = false) String sortBy,
@@ -108,7 +162,6 @@ public class ToolbarController {
             allSelectedTags.add(tag);
         }
 
-        // Получаем все возможные значения для фильтров
         model.addAttribute("allAuthors", authorRepository.findAll());
         model.addAttribute("allGenres", genreRepository.findAll());
         model.addAttribute("allTags", tagRepository.findAll());
@@ -117,7 +170,6 @@ public class ToolbarController {
         model.addAttribute("allCoverTypes", bookRepository.findDistinctCoverTypes());
         model.addAttribute("allAgeLimits", bookRepository.findDistinctAgeLimits());
 
-        // Установка значений по умолчанию для слайдеров
         Integer minYearValue = minYear != null ? minYear : bookRepository.findMinPublishingYear();
         Integer maxYearValue = maxYear != null ? maxYear : bookRepository.findMaxPublishingYear();
         Double minPriceValue = minPrice != null ? minPrice : bookRepository.findMinPrice();
@@ -132,7 +184,6 @@ public class ToolbarController {
         model.addAttribute("selectedMinPrice", minPriceValue);
         model.addAttribute("selectedMaxPrice", maxPriceValue);
 
-        // Фильтрация книг
         Specification<Book> spec = Specification.where((root, query, cb) ->
                 cb.equal(root.get("status"), "Активна")
         );
@@ -226,7 +277,7 @@ public class ToolbarController {
                     books.sort((b1, b2) -> {
                         int b1Popularity = b1.getUserFavorites().size() + b1.getOrderItems().size();
                         int b2Popularity = b2.getUserFavorites().size() + b2.getOrderItems().size();
-                        return Integer.compare(b2Popularity, b1Popularity); // По убыванию
+                        return Integer.compare(b2Popularity, b1Popularity);
                     });
                     break;
             }
@@ -245,6 +296,26 @@ public class ToolbarController {
         return "Toolbar/catalog";
     }
 
+    /**
+     * Отображает страницу с результатами поиска книг с возможностью фильтрации.
+     *
+     * @param sortBy Способ сортировки (price_asc, price_desc, popular)
+     * @param inStock Флаг наличия товара
+     * @param q Поисковый запрос
+     * @param authors Список ID авторов для фильтрации
+     * @param genres Список ID жанров для фильтрации
+     * @param tags Список ID тегов для фильтрации
+     * @param languages Список ID языков для фильтрации
+     * @param publishers Список ID издателей для фильтрации
+     * @param coverTypes Список типов обложки для фильтрации
+     * @param ageLimits Список возрастных ограничений для фильтрации
+     * @param minYear Минимальный год издания
+     * @param maxYear Максимальный год издания
+     * @param minPrice Минимальная цена
+     * @param maxPrice Максимальная цена
+     * @param model Модель для передачи данных в представление
+     * @return Страница каталога с результатами поиска
+     */
     @GetMapping("/search")
     public String searchPage(@RequestParam(required = false) String sortBy,
                              @RequestParam(required = false) Boolean inStock,
@@ -274,7 +345,6 @@ public class ToolbarController {
                 .limit(10)
                 .collect(Collectors.toList()));
 
-        // Получаем все возможные значения для фильтров
         model.addAttribute("allAuthors", authorRepository.findAll());
         model.addAttribute("allGenres", genreRepository.findAll());
         model.addAttribute("allTags", tagRepository.findAll());
@@ -283,7 +353,6 @@ public class ToolbarController {
         model.addAttribute("allCoverTypes", bookRepository.findDistinctCoverTypes());
         model.addAttribute("allAgeLimits", bookRepository.findDistinctAgeLimits());
 
-        // Установка значений по умолчанию для слайдеров
         Integer minYearValue = minYear != null ? minYear : bookRepository.findMinPublishingYear();
         Integer maxYearValue = maxYear != null ? maxYear : bookRepository.findMaxPublishingYear();
         Double minPriceValue = minPrice != null ? minPrice : bookRepository.findMinPrice();
@@ -298,7 +367,6 @@ public class ToolbarController {
         model.addAttribute("selectedMinPrice", minPriceValue);
         model.addAttribute("selectedMaxPrice", maxPriceValue);
 
-        // Фильтрация книг
         Specification<Book> spec = Specification.where((root, query, cb) ->
                 cb.equal(root.get("status"), "Активна")
         );
@@ -309,7 +377,6 @@ public class ToolbarController {
             );
         }
 
-        // Базовый фильтр по поисковому запросу
         spec = spec.and((root, query, cb) -> {
             Join<Book, Author> authorJoin = root.join("authors", JoinType.LEFT);
             return cb.or(
@@ -401,7 +468,7 @@ public class ToolbarController {
                     books.sort((b1, b2) -> {
                         int b1Popularity = b1.getUserFavorites().size() + b1.getOrderItems().size();
                         int b2Popularity = b2.getUserFavorites().size() + b2.getOrderItems().size();
-                        return Integer.compare(b2Popularity, b1Popularity); // По убыванию
+                        return Integer.compare(b2Popularity, b1Popularity);
                     });
                     break;
             }

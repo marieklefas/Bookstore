@@ -5,6 +5,11 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сущность, представляющая книгу в системе.
+ * Содержит информацию о книге и ее связях с другими сущностями:
+ * авторами, жанрами, тегами, языком, издателем и пользователями.
+ */
 @Entity
 @Table(name = "Books")
 public class Book {
@@ -156,7 +161,12 @@ public class Book {
     public List<OrderItems> getOrderItems() { return orderItems; }
     public void setOrderItems(List<OrderItems> orderItems) { this.orderItems = orderItems; }
 
-
+    /**
+     * Возвращает количество данной книги в корзине указанного пользователя.
+     *
+     * @param username Имя пользователя
+     * @return Количество книг в корзине (0 если нет в корзине)
+     */
     public int getUserCartCount(String username) {
         return cartItems.stream()
                 .filter(item -> item.getUser().getUsername().equals(username))

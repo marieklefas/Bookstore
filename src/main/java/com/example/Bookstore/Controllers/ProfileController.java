@@ -15,12 +15,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
-
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 
+/**
+ * Контроллер для работы с профилем пользователя.
+ * Обеспечивает функционал просмотра и редактирования личных данных, управления заказами,
+ * избранными товарами и историей покупок.
+ */
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
@@ -29,6 +33,13 @@ public class ProfileController {
     @Autowired private OrderRepository orderRepository;
     @Autowired private UserService userService;
 
+    /**
+     * Отображает главную страницу профиля пользователя со статистикой.
+     *
+     * @param model Модель для передачи данных в представление
+     * @param userDetails Данные аутентифицированного пользователя
+     * @return Страница профиля
+     */
     @GetMapping
     public String profilePage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -47,8 +58,6 @@ public class ProfileController {
         allBooksForStats.addAll(purchasedBooks);
         List<Book> combinedBooks = new ArrayList<>(allBooksForStats);
 
-        // Calculate statistics for charts
-        // Genres
         Map<String, Long> genreCounts = combinedBooks.stream()
                 .flatMap(book -> book.getGenres().stream())
                 .collect(Collectors.groupingBy(
@@ -56,7 +65,6 @@ public class ProfileController {
                         Collectors.counting()
                 ));
 
-        // Tags
         Map<String, Long> tagCounts = combinedBooks.stream()
                 .flatMap(book -> book.getTags().stream())
                 .collect(Collectors.groupingBy(
@@ -64,7 +72,6 @@ public class ProfileController {
                         Collectors.counting()
                 ));
 
-        // Authors
         Map<String, Long> authorCounts = combinedBooks.stream()
                 .flatMap(book -> book.getAuthors().stream())
                 .collect(Collectors.groupingBy(
@@ -72,7 +79,6 @@ public class ProfileController {
                         Collectors.counting()
                 ));
 
-        // Languages
         Map<String, Long> languageCounts = combinedBooks.stream()
                 .map(Book::getLanguage)
                 .filter(Objects::nonNull)
@@ -81,7 +87,6 @@ public class ProfileController {
                         Collectors.counting()
                 ));
 
-        // Cover Types
         Map<String, Long> coverTypeCounts = combinedBooks.stream()
                 .map(Book::getCoverType)
                 .filter(Objects::nonNull)
@@ -90,14 +95,12 @@ public class ProfileController {
                         Collectors.counting()
                 ));
 
-        // Add statistics to model
         model.addAttribute("genreCounts", genreCounts);
         model.addAttribute("tagCounts", tagCounts);
         model.addAttribute("authorCounts", authorCounts);
         model.addAttribute("languageCounts", languageCounts);
         model.addAttribute("coverTypeCounts", coverTypeCounts);
 
-        // Основные счетчики
         model.addAttribute("ordersCount", allOrders.size());
         model.addAttribute("favoritesCount", favorites.size());
         model.addAttribute("purchasedCount", purchasedBooks.stream().count());
@@ -105,6 +108,13 @@ public class ProfileController {
         return "Profile/profile";
     }
 
+    /**
+     * Отображает страницу с заказами пользователя.
+     *
+     * @param model Модель для передачи данных
+     * @param userDetails Данные аутентифицированного пользователя
+     * @return Страница с заказами
+     */
     @GetMapping("/orders")
     public String ordersPage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -126,6 +136,14 @@ public class ProfileController {
         return "Profile/orders";
     }
 
+    /**
+     * Отображает детали конкретного заказа.
+     *
+     * @param orderId ID заказа
+     * @param model Модель для передачи данных
+     * @param userDetails Данные аутентифицированного пользователя
+     * @return Страница с деталями заказа или перенаправление при ошибках
+     */
     @GetMapping("/orders/{orderId}")
     public String OrderDetailsPage(@PathVariable String orderId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -146,7 +164,13 @@ public class ProfileController {
         return "Profile/orderDetails";
     }
 
-
+    /**
+     * Отображает страницу с избранными товарами пользователя.
+     *
+     * @param model Модель для передачи данных
+     * @param userDetails Данные аутентифицированного пользователя
+     * @return Страница с избранными товарами
+     */
     @GetMapping("/favorites")
     public String favoritesPage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -160,6 +184,13 @@ public class ProfileController {
         return "Profile/favorites";
     }
 
+    /**
+     * Отображает страницу с личными данными пользователя.
+     *
+     * @param model Модель для передачи данных
+     * @param userDetails Данные аутентифицированного пользователя
+     * @return Страница с личными данными
+     */
     @GetMapping("/personalData")
     public String personalDataPage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -168,6 +199,17 @@ public class ProfileController {
         return "Profile/personalData";
     }
 
+    /**
+     * Обновляет личные данные пользователя.
+     *
+     * @param formUser Данные из формы
+     * @param currentPassword Текущий пароль
+     * @param newPassword Новый пароль
+     * @param repeatPassword Повтор нового пароля
+     * @param model Модель для передачи данных и ошибок
+     * @param userDetails Данные аутентифицированного пользователя
+     * @return Страница с личными данными с сообщением о результате
+     */
     @PostMapping("/personalData")
     public String updatePersonalData(@ModelAttribute("user") User formUser,
                                      @RequestParam(required = false) String currentPassword,
@@ -225,6 +267,14 @@ public class ProfileController {
         return "Profile/personalData";
     }
 
+    /**
+     * Удаляет аккаунт пользователя (помечает как "Удален").
+     *
+     * @param userDetails Данные аутентифицированного пользователя
+     * @param request HTTP запрос
+     * @return Перенаправление на страницу входа
+     * @throws ServletException При ошибках выхода из системы
+     */
     @PostMapping("/delete")
     public String deleteAccount(@AuthenticationPrincipal UserDetails userDetails,
                                 HttpServletRequest request) throws ServletException {
@@ -236,6 +286,13 @@ public class ProfileController {
         return "redirect:/login?accountDeleted";
     }
 
+    /**
+     * Отображает страницу с купленными товарами.
+     *
+     * @param model Модель для передачи данных
+     * @param userDetails Данные аутентифицированного пользователя
+     * @return Страница с купленными товарами
+     */
     @GetMapping("/purchased")
     public String purchasedPage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -257,7 +314,13 @@ public class ProfileController {
         return "Profile/purchased";
     }
 
-
+    /**
+     * Добавляет/удаляет книгу из избранного.
+     *
+     * @param id ID книги
+     * @param principal Данные аутентифицированного пользователя
+     * @return ResponseEntity с HTTP статусом
+     */
     @PostMapping("/toggle-favorite/{id}")
     @ResponseBody
     public ResponseEntity<?> toggleFavorite(@PathVariable Long id, Principal principal) {

@@ -12,9 +12,9 @@
         }
 
         .form-control {
-            background-color: #FFF4E2 !important;  /* Цвет фона, как у основного фона */
-            border: 1px solid #E7C39C !important; /* Граница в тон кнопкам */
-            color: #4C1C04 !important;            /* Цвет текста */
+            background-color: #FFF4E2 !important;
+            border: 1px solid #E7C39C !important;
+            color: #4C1C04 !important;
         }
 
         .custom-btn {
@@ -39,7 +39,6 @@
 
             <div class="card p-4 border-0 shadow-sm" style="background-color: #FFF4E2;">
                 <form th:action="@{/register}" th:object="${user}" method="post">
-                    <!-- Первый ряд: Основные данные -->
                     <div class="mb-4">
                         <div class="row">
                             <div class="col-md-4 mb-3">
@@ -57,7 +56,6 @@
                         </div>
                     </div>
 
-                    <!-- Второй ряд: Контактные данные -->
                     <div class="mb-4">
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -71,7 +69,6 @@
                         </div>
                     </div>
 
-                    <!-- Третий ряд: Пароли -->
                     <div class="mb-4">
                         <div class="row">
                             <div class="col-md-6 mb-3">

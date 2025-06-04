@@ -1,20 +1,18 @@
 package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сущность, представляющая заказ в книжном магазине.
+ * Содержит информацию о пользователе, списке товаров, промокоде, стоимости и статусе заказа.
+ */
 @Entity
 @Table(name = "Orders")
 public class Order {
     public Order() {}
-
-    public Order(int order_id, String book_id, String user_id) {
-
-    }
 
     @Id
     @Column(name= "id", nullable = false)

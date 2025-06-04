@@ -57,11 +57,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h1 class="text-center mb-4"><span class="section-title">Добавление сотрудника</span></h1>
-<!--            <h1 class="text-center mb-4 section-title">Добавление сотрудника</h1>-->
 
             <div class="card p-4 border-0 shadow-sm" style="background-color: #FFF4E2;">
                 <form th:action="@{/managing/addemployee}" th:object="${user}" method="post">
-                    <!-- Первый ряд: Основные данные -->
                     <div class="mb-4">
                         <div class="row">
                             <div class="col-md-4 mb-3">
@@ -79,7 +77,6 @@
                         </div>
                     </div>
 
-                    <!-- Второй ряд: Контактные данные -->
                     <div class="mb-4">
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -93,7 +90,6 @@
                         </div>
                     </div>
 
-                    <!-- Третий ряд: Пароли -->
                     <div class="mb-4">
                         <div class="row">
                             <div class="col-md-6 mb-3">

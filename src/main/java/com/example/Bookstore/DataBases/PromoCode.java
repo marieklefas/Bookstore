@@ -1,12 +1,14 @@
 package com.example.Bookstore.DataBases;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import java.time.LocalDate;
 
+/**
+ * Сущность, представляющая промокод для применения в заказах.
+ * Содержит информацию о коде, типе скидки, размере скидки и периоде действия.
+ */
 @Entity
 @Table(name = "PromoCode")
 public class PromoCode {
@@ -42,7 +44,6 @@ public class PromoCode {
 
     @OneToMany(mappedBy = "promoCode")
     private List<Order> orders = new ArrayList<>();
-
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

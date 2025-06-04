@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Сущность, представляющая пользователя книжного магазина.
+ * Содержит персональные данные, учетные данные, роли и связанные сущности (заказы, избранное, корзину).
+ */
 @Entity
 @Table(name = "Users")
 public class User {
